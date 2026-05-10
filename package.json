@@ -1,0 +1,28 @@
+{
+  "name": "sigr-linea-base",
+  "version": "1.0.0",
+  "description": "Linea base del Sistema Integral de Gestion de Restaurante (SIGR).",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/infrastructure/database/runSeed.js",
+    "test": "jest --runInBand"
+  },
+  "keywords": [
+    "restaurante",
+    "linea-base",
+    "gestion-software"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  }
+}
