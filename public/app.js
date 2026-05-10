@@ -52,6 +52,9 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 function setStatus(ok) {
+  if (!statusEl) {
+    return;
+  }
   statusEl.textContent = ok ? "API activa" : "Sin conexion";
   statusEl.className = ok ? "status ok" : "status error";
 }
