@@ -1,8 +1,8 @@
-# Taller Linea Base SIGR
+# 1 Línea Base Software de Restaurante
 
 ## Portada
 
-**Titulo:** Taller Grupal - Linea Base Software de Restaurante  
+**Titulo:** Línea Base Software de Restaurante  
 **Sistema:** Sistema Integral de Gestion de Restaurante (SIGR)  
 **Curso:** Gestion del Software  
 **Fecha:** 10/05/2026  
@@ -72,7 +72,7 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - `CHANGELOG.md`: historial de cambios de la linea base.
 - `LICENSE.txt`: licencia MIT.
 - `docs/linea-base.md`: fuente del documento tecnico para exportar a PDF.
-- `docs/assets/dashboard-preview.png`: imagen generada automaticamente para evidenciar la vista inicial del dashboard.
+- `docs/assets/dashboard-preview-v2.png`: imagen generada automaticamente para evidenciar la vista inicial del dashboard.
 
 ## Validacion y Aprobacion
 
@@ -83,27 +83,35 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 
 ## Historial de Cambios de la Linea Base
 
-| Commit | Tipo | Descripcion | Evidencia |
-| --- | --- | --- | --- |
-| 99aeece | chore | Inicializacion de la linea base SIGR. | API base, tests, README y configuracion Vercel. |
-| ae3a742 | feat | Ampliacion de datos demo. | 15 productos con imagenes, 10 clientes y 5 pedidos. |
-| a5e493b | feat | Endpoints de dashboard. | Resumen operativo y ultimos pedidos. |
-| d603930 | feat | Layout demo. | Navegacion principal y sidebar glassmorphism. |
-| 0c1782d | feat | Dashboard Bento. | Metricas, ultimos pedidos y productos mas vendidos. |
-| 37a4fe9 | feat | Productos y clientes paginados. | Controles visuales y paginacion de servidor. |
-| c0f3d60 | feat | Pedidos maestro-detalle. | Drawer lateral con desglose de items y total. |
-| 5e936fb | style | Pulido visual. | Badges de estado y mejoras de lectura. |
-| d182b13 | feat | CRUD visual de clientes. | Formulario modal para agregar y modificar clientes. |
-| 40f9422 | feat | CRUD visual de productos. | Formulario modal para agregar y modificar productos. |
-| 3a20f32 | feat | Analitica de dashboard administrativo. | Endpoint con revenue, ordenes, categorias, actividad y resenas. |
-| 2919ab6 | feat | Redisenho de dashboard administrativo. | UI inspirada en dashboard SaaS de restaurante con graficas y panel lateral. |
-| 0919f48 | docs | Documentacion de dashboard administrativo. | README y linea base actualizados con analitica. |
-| e9827ed | feat | Ofertas del dia. | Slider automatico con tres pancerottis y ajustes de pantalla completa. |
-| 1730e9e | style | Rebranding visual restaurante. | Sidebar blanca, paleta naranja y logo de pancerotti con marca Restaurante. |
-| fa876fc | style | Header ejecutivo. | Saludo, buscador, acciones y perfil de usuario estilo dashboard moderno. |
-| b746f84 | style | Cards y layout del dashboard. | KPIs con ordenes, clientes, ingresos y ticket promedio. |
-| d3cc08a | style | Visualizaciones del dashboard. | Graficas de ingresos, ordenes por dia y tipos de orden mejoradas. |
-| 3fe37d9 | style | Panel derecho del dashboard. | Menus en tendencia, actividad reciente y resenas con avatares. |
+| Commit | Tipo | Fecha y hora | Descripcion | Evidencia |
+| --- | --- | --- | --- | --- |
+| 99aeece | chore | 2026-05-10 01:24 | Inicializacion de la linea base SIGR. | API base, tests, README y configuracion Vercel. |
+| ae3a742 | feat | 2026-05-10 01:48 | Ampliacion de datos demo. | 15 productos con imagenes, 10 clientes y 5 pedidos. |
+| a5e493b | feat | 2026-05-10 01:52 | Endpoints de dashboard. | Resumen operativo y ultimos pedidos. |
+| d603930 | feat | 2026-05-10 01:55 | Layout demo. | Navegacion principal y sidebar glassmorphism. |
+| 0c1782d | feat | 2026-05-10 01:56 | Dashboard Bento. | Metricas, ultimos pedidos y productos mas vendidos. |
+| 37a4fe9 | feat | 2026-05-10 01:58 | Productos y clientes paginados. | Controles visuales y paginacion de servidor. |
+| c0f3d60 | feat | 2026-05-10 01:59 | Pedidos maestro-detalle. | Drawer lateral con desglose de items y total. |
+| 5e936fb | style | 2026-05-10 02:00 | Pulido visual. | Badges de estado y mejoras de lectura. |
+| 5a24810 | docs | 2026-05-10 02:01 | Documentacion de trazabilidad. | Historial de commits inicial incluido en documento tecnico. |
+| d182b13 | feat | 2026-05-10 02:07 | CRUD visual de clientes. | Formulario modal para agregar y modificar clientes. |
+| 40f9422 | feat | 2026-05-10 02:08 | CRUD visual de productos. | Formulario modal para agregar y modificar productos. |
+| 7a475ed | docs | 2026-05-10 02:09 | Actualizacion de trazabilidad CRUD. | Documento tecnico actualizado con cambios de clientes y productos. |
+| 3a20f32 | feat | 2026-05-10 02:25 | Analitica de dashboard administrativo. | Endpoint con revenue, ordenes, categorias, actividad y resenas. |
+| 2919ab6 | feat | 2026-05-10 02:29 | Redisenho de dashboard administrativo. | UI inspirada en dashboard SaaS de restaurante con graficas y panel lateral. |
+| 0919f48 | docs | 2026-05-10 02:30 | Documentacion de dashboard administrativo. | README y linea base actualizados con analitica. |
+| e9827ed | feat | 2026-05-10 02:38 | Ofertas del dia. | Slider automatico con tres pancerottis y ajustes de pantalla completa. |
+| 71cc782 | docs | 2026-05-10 02:48 | Cierre de entrega de linea base. | PDF, README y tag de entrega preparados. |
+| 1730e9e | style | 2026-05-10 02:55 | Rebranding visual restaurante. | Sidebar blanca, paleta naranja y logo de pancerotti con marca Restaurante. |
+| fa876fc | style | 2026-05-10 02:58 | Header ejecutivo. | Saludo, buscador, acciones y perfil de usuario estilo dashboard moderno. |
+| b746f84 | style | 2026-05-10 03:00 | Cards y layout del dashboard. | KPIs con ordenes, clientes, ingresos y ticket promedio. |
+| d3cc08a | style | 2026-05-10 03:01 | Visualizaciones del dashboard. | Graficas de ingresos, ordenes por dia y tipos de orden mejoradas. |
+| 3fe37d9 | style | 2026-05-10 03:03 | Panel derecho del dashboard. | Menus en tendencia, actividad reciente y resenas con avatares. |
+| 9ae236c | docs | 2026-05-10 03:04 | Documentacion del redisenho visual. | README, CHANGELOG y linea base actualizados con fases visuales. |
+| 77950e0 | style | 2026-05-10 03:09 | Logo y estado de API. | Imagen de logo actualizada y estado API retirado del sidebar. |
+| 1f4cae8 | style | 2026-05-10 03:14 | Logo local del dashboard. | Asset local usado en el dashboard desde public/assets. |
+| b0762be | docs | 2026-05-10 03:16 | Imagen inicial del dashboard. | Preview del README reemplazado en docs/assets. |
+| 790559d | docs | 2026-05-10 03:18 | Preview actualizado del dashboard. | README apunta a dashboard-preview-v2.png para evitar cache. |
 
 ## Estructura de Datos
 

@@ -20,7 +20,7 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs" / "linea-base.md"
 OUTPUT = ROOT / "Taller_LineaBase_SIGR.pdf"
-PREVIEW = ROOT / "docs" / "assets" / "dashboard-preview.png"
+PREVIEW = ROOT / "docs" / "assets" / "dashboard-preview-v2.png"
 
 
 def clean_inline(text):
@@ -53,7 +53,10 @@ def build_story():
         nonlocal table_buffer
         if table_buffer:
             rows = [[Paragraph(clean_inline(cell.strip()), styles["Small"]) for cell in row] for row in table_buffer]
-            table = Table(rows, repeatRows=1, hAlign="LEFT")
+            col_widths = None
+            if len(table_buffer[0]) == 5:
+                col_widths = [0.62 * inch, 0.48 * inch, 0.88 * inch, 1.65 * inch, 3.05 * inch]
+            table = Table(rows, repeatRows=1, hAlign="LEFT", colWidths=col_widths)
             table.setStyle(TableStyle([
                 ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f0f4f8")),
                 ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#ccd6dd")),
@@ -114,7 +117,7 @@ def main():
         leftMargin=0.65 * inch,
         topMargin=0.55 * inch,
         bottomMargin=0.55 * inch,
-        title="Taller Linea Base SIGR",
+        title="Línea Base Software de Restaurante",
     )
     doc.build(build_story())
     print(f"PDF generado: {OUTPUT}")
