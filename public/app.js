@@ -163,6 +163,157 @@ async function renderDashboard() {
   `;
 }
 
+async function renderDashboard() {
+  viewRoot.innerHTML = `<section class="admin-dashboard skeleton"></section>`;
+
+  const [analytics, recentOrders, topProducts] = await Promise.all([
+    fetchJson("/api/dashboard/analytics"),
+    fetchJson("/api/dashboard/recent-orders?limit=5"),
+    fetchJson("/api/reports/top-products")
+  ]);
+
+  const revenuePoints = analytics.revenueSeries.map((item, index) => {
+    const x = index * 44 + 10;
+    const y = 116 - Math.round(item.income / 19000 * 92);
+    return `${x},${y}`;
+  }).join(" ");
+  const expensePoints = analytics.revenueSeries.map((item, index) => {
+    const x = index * 44 + 10;
+    const y = 116 - Math.round(item.expense / 19000 * 92);
+    return `${x},${y}`;
+  }).join(" ");
+  const maxOrders = Math.max(...analytics.ordersOverview.map((item) => item.orders));
+  const categoryTotal = analytics.topCategories.reduce((sum, item) => sum + item.value, 0) || 1;
+
+  viewRoot.innerHTML = `
+    <section class="admin-dashboard">
+      <div class="dashboard-main">
+        <section class="kpi-row">
+          <article class="kpi-card"><span>Total ordenes</span><strong>${analytics.totals.orders}</strong><small>+15.5%</small></article>
+          <article class="kpi-card"><span>Total clientes</span><strong>${analytics.totals.customers}</strong><small>+4.2%</small></article>
+          <article class="kpi-card"><span>Total ingresos</span><strong>${formatCurrency(analytics.totals.revenue)}</strong><small>+2.36%</small></article>
+        </section>
+
+        <section class="chart-card revenue-card">
+          <div class="card-header">
+            <div><p class="eyebrow">Finanzas</p><h2>Total Revenue</h2></div>
+            <span>Last 8 Months</span>
+          </div>
+          <strong>${formatCurrency(analytics.totals.revenue + analytics.expenses)}</strong>
+          <svg class="line-chart" viewBox="0 0 330 132" role="img" aria-label="Revenue chart">
+            <polyline points="${expensePoints}" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="${revenuePoints}" fill="none" stroke="#f97316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          </svg>
+          <div class="chart-legend"><span class="dot orange"></span>Income <span class="dot dark"></span>Expense</div>
+        </section>
+
+        <section class="chart-card overview-card">
+          <div class="card-header">
+            <div><p class="eyebrow">Ordenes</p><h2>Orders Overview</h2></div>
+            <span>This Week</span>
+          </div>
+          <div class="bar-chart">
+            ${analytics.ordersOverview.map((item) => `
+              <div class="bar-item">
+                <span style="height:${Math.max(28, Math.round(item.orders / maxOrders * 150))}px"></span>
+                <small>${item.label}</small>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="chart-card split-card">
+          <div>
+            <div class="card-header"><div><p class="eyebrow">Categorias</p><h2>Top Categories</h2></div></div>
+            <div class="donut" style="--a:${Math.round(analytics.topCategories[0].value / categoryTotal * 100)}%; --b:${Math.round(analytics.topCategories[1].value / categoryTotal * 100)}%;"></div>
+            <ul class="mini-list">
+              ${analytics.topCategories.map((item) => `<li><span>${item.name}</span><strong>${Math.round(item.value / categoryTotal * 100)}%</strong></li>`).join("")}
+            </ul>
+          </div>
+          <div>
+            <div class="card-header"><div><p class="eyebrow">Tipos</p><h2>Order Types</h2></div></div>
+            <ul class="type-list">
+              ${analytics.orderTypes.map((item) => `<li><span>${item.name}</span><strong>${item.value}</strong><small>${formatCurrency(item.amount)}</small></li>`).join("")}
+            </ul>
+          </div>
+        </section>
+
+        <section class="chart-card recent-table">
+          <div class="card-header">
+            <div><p class="eyebrow">Pedidos</p><h2>Recent Orders</h2></div>
+            <button type="button" class="small-button" onclick="document.querySelector('[data-view=orders]').click()">Ver todos</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Order ID</th><th>Menu</th><th>Qty</th><th>Amount</th><th>Customer</th><th>Status</th></tr></thead>
+              <tbody>
+                ${recentOrders.slice(0, 4).map((order) => `
+                  <tr>
+                    <td>ORD${order.id.padStart(4, "0")}</td>
+                    <td>${order.items[0].product.name}</td>
+                    <td>${order.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
+                    <td>${formatCurrency(order.total)}</td>
+                    <td>${order.customer ? order.customer.name : "Cliente"}</td>
+                    <td><span class="${statusClass(order.status)}">${order.status}</span></td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <aside class="dashboard-side">
+        <section class="chart-card">
+          <div class="card-header">
+            <div><p class="eyebrow">Menu</p><h2>Trending Menus</h2></div>
+            <span>This Week</span>
+          </div>
+          <div class="trend-list">
+            ${topProducts.slice(0, 3).map((item) => `
+              <article class="trend-card">
+                <img src="${item.product.imageUrl}" alt="${item.product.name}">
+                <h3>${item.product.name}</h3>
+                <p>${item.product.description}</p>
+                <strong>${formatCurrency(item.product.price)}</strong>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="chart-card">
+          <div class="card-header"><div><p class="eyebrow">Actividad</p><h2>Recent Activity</h2></div></div>
+          <div class="activity-list">
+            ${analytics.recentActivity.map((item) => `
+              <div class="activity-item">
+                <strong>${item.title}</strong>
+                <span>${item.description}</span>
+                <small>${item.time}</small>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="chart-card">
+          <div class="card-header"><div><p class="eyebrow">Reviews</p><h2>Customer Reviews</h2></div></div>
+          <div class="review-list">
+            ${analytics.reviews.map((review) => `
+              <article class="review-card">
+                <img src="${review.imageUrl}" alt="${review.title}">
+                <div>
+                  <strong>${review.title}</strong>
+                  <p>${review.text}</p>
+                  <span>${review.customer} - ${review.rating} / 5</span>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      </aside>
+    </section>
+  `;
+}
+
 async function renderProducts() {
   viewRoot.innerHTML = `
     <section class="toolbar">
