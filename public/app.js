@@ -1,5 +1,8 @@
 const state = {
-  view: "dashboard"
+  view: "dashboard",
+  productsPage: 1,
+  customersPage: 1,
+  limit: 6
 };
 
 const titles = {
@@ -141,11 +144,79 @@ async function renderDashboard() {
 }
 
 async function renderProducts() {
-  renderPlaceholder("Catalogo de productos");
+  viewRoot.innerHTML = `
+    <section class="toolbar">
+      <p>Catalogo visual con paginacion desde servidor.</p>
+    </section>
+    <section class="product-grid">
+      ${Array.from({ length: 6 }).map(() => "<article class=\"product-card skeleton\"></article>").join("")}
+    </section>
+  `;
+
+  const result = await fetchJson(`/api/products?page=${state.productsPage}&limit=${state.limit}`);
+
+  viewRoot.innerHTML = `
+    <section class="toolbar">
+      <p>${result.meta.total} productos registrados</p>
+    </section>
+    <section class="product-grid">
+      ${result.data.map((product) => `
+        <article class="product-card">
+          <img src="${product.imageUrl}" alt="${product.name}">
+          <div>
+            <span class="badge">${product.available ? "Disponible" : "Agotado"}</span>
+            <h2>${product.name}</h2>
+            <p>${product.description}</p>
+            <strong>${formatCurrency(product.price)}</strong>
+          </div>
+        </article>
+      `).join("")}
+    </section>
+    ${renderPagination("products", result.meta)}
+  `;
+  bindPagination();
 }
 
 async function renderCustomers() {
-  renderPlaceholder("Listado de clientes");
+  viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
+
+  const result = await fetchJson(`/api/users?page=${state.customersPage}&limit=${state.limit}&role=cliente`);
+
+  viewRoot.innerHTML = `
+    <section class="data-panel">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Clientes</p>
+          <h2>Base de clientes demo</h2>
+        </div>
+        <span>${result.meta.total} registros</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Telefono</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${result.data.map((customer) => `
+              <tr>
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.phone}</td>
+                <td><span class="badge">${customer.active ? "Activo" : "Inactivo"}</span></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    ${renderPagination("customers", result.meta)}
+  `;
+  bindPagination();
 }
 
 async function renderOrders() {
@@ -174,3 +245,28 @@ menuButtons.forEach((button) => {
 refreshButton.addEventListener("click", render);
 
 render();
+
+function renderPagination(type, meta) {
+  return `
+    <nav class="pagination" aria-label="Paginacion de ${type}">
+      <button type="button" data-page-target="${type}" data-page="${meta.page - 1}" ${meta.page <= 1 ? "disabled" : ""}>Anterior</button>
+      <span>Pagina ${meta.page} de ${meta.totalPages}</span>
+      <button type="button" data-page-target="${type}" data-page="${meta.page + 1}" ${meta.page >= meta.totalPages ? "disabled" : ""}>Siguiente</button>
+    </nav>
+  `;
+}
+
+function bindPagination() {
+  document.querySelectorAll("[data-page-target]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const page = Number(button.dataset.page);
+      if (button.dataset.pageTarget === "products") {
+        state.productsPage = page;
+      }
+      if (button.dataset.pageTarget === "customers") {
+        state.customersPage = page;
+      }
+      render();
+    });
+  });
+}

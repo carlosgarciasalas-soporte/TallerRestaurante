@@ -312,6 +312,98 @@ h1 {
   animation: shimmer 1.2s infinite;
 }
 
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  color: var(--muted);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  overflow: hidden;
+  min-height: 344px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.product-card img {
+  width: 100%;
+  height: 170px;
+  display: block;
+  object-fit: cover;
+}
+
+.product-card div {
+  padding: 16px;
+}
+
+.product-card h2 {
+  margin: 10px 0 8px;
+  font-size: 18px;
+}
+
+.product-card p {
+  min-height: 42px;
+  color: var(--muted);
+}
+
+.product-card strong {
+  font-size: 20px;
+}
+
+.data-panel {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 @keyframes shimmer {
   to {
     transform: translateX(100%);
@@ -334,7 +426,8 @@ h1 {
   }
 
   .bento-grid,
-  .top-products {
+  .top-products,
+  .product-grid {
     grid-template-columns: 1fr;
   }
 

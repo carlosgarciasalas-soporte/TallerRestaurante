@@ -66,6 +66,14 @@ describe("SIGR Linea Base API", () => {
     expect(response.body.activeOrders).toBeGreaterThan(0);
   });
 
+  test("filtra clientes y conserva paginacion de servidor", async () => {
+    const response = await request(app).get("/api/users?page=1&limit=6&role=cliente");
+
+    expect(response.status).toBe(200);
+    expect(response.body.meta.total).toBe(10);
+    expect(response.body.data.every((user) => user.role === "cliente")).toBe(true);
+  });
+
   test("registra pago y genera reporte diario de ventas", async () => {
     const order = await request(app)
       .post("/api/orders")
