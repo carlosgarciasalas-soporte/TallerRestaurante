@@ -6,7 +6,7 @@ Linea base inicial del sistema SIGR para la actividad **AA2: Taller Grupal - Lin
 
 SIGR es una API web para gestionar operaciones basicas de un restaurante: usuarios, menu digital, pedidos, reservas, pagos, caja y reportes. Esta version funciona como linea base estable para control de cambios y trazabilidad.
 
-La demo web incluye dashboard tipo Bento Grid, productos con imagenes, clientes paginados, formularios para agregar/modificar clientes y productos, y pedidos maestro-detalle con panel lateral.
+La demo web incluye dashboard administrativo con metricas, graficas, menus tendencia, actividad reciente, resenas, productos con imagenes, clientes paginados, formularios para agregar/modificar clientes y productos, y pedidos maestro-detalle con panel lateral.
 
 ## Stack
 
@@ -97,6 +97,7 @@ Nota: esta linea base usa repositorios en memoria. En Vercel los datos pueden re
 - `GET /api/reports/top-products`
 - `GET /api/dashboard/summary`
 - `GET /api/dashboard/recent-orders`
+- `GET /api/dashboard/analytics`
 
 Los endpoints de listado soportan `page` y `limit`.
 

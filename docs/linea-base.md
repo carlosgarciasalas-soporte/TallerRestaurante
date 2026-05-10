@@ -35,6 +35,7 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - Vistas paginadas para productos y clientes.
 - Formularios modales para agregar y modificar clientes.
 - Formularios modales para agregar y modificar productos.
+- Dashboard administrativo con metricas, graficas de ingresos, ordenes, categorias, actividad, resenas y menus tendencia.
 - Panel lateral de detalle para pedidos.
 - Pruebas basicas de integracion.
 - Documentacion tecnica minima.
@@ -92,3 +93,5 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 | 5e936fb | style | Pulido visual. | Badges de estado y mejoras de lectura. |
 | d182b13 | feat | CRUD visual de clientes. | Formulario modal para agregar y modificar clientes. |
 | 40f9422 | feat | CRUD visual de productos. | Formulario modal para agregar y modificar productos. |
+| 3a20f32 | feat | Analitica de dashboard administrativo. | Endpoint con revenue, ordenes, categorias, actividad y resenas. |
+| 2919ab6 | feat | Redisenho de dashboard administrativo. | UI inspirada en dashboard SaaS de restaurante con graficas y panel lateral. |
