@@ -662,7 +662,7 @@ th {
 
 .admin-dashboard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 18px;
 }
 
@@ -681,7 +681,7 @@ th {
 
 .kpi-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -694,25 +694,57 @@ th {
 }
 
 .kpi-card {
-  min-height: 108px;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 116px;
   padding: 18px;
 }
 
 .kpi-card span,
 .kpi-card small,
-.chart-card > span {
+.chart-card > span,
+.kpi-card em {
   color: var(--muted);
 }
 
+.kpi-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--brand), #ff7a1a);
+  color: #ffffff !important;
+  font-size: 22px;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(255, 90, 0, 0.25);
+}
+
 .kpi-card strong {
-  display: block;
-  margin: 10px 0 6px;
+  display: inline-block;
+  margin: 7px 8px 4px 0;
   font-size: 26px;
 }
 
 .kpi-card small {
-  color: var(--accent);
   font-weight: 800;
+}
+
+.kpi-card small.up,
+.kpi-card small.down-good {
+  color: #2fb574;
+}
+
+.kpi-card small.down {
+  color: #ef4444;
+}
+
+.kpi-card em {
+  display: block;
+  font-style: normal;
+  font-size: 12px;
 }
 
 .chart-card {
@@ -720,10 +752,18 @@ th {
   overflow: hidden;
 }
 
-.revenue-card > strong {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 24px;
+.chart-card h2 {
+  margin-bottom: 0;
+  font-size: 20px;
+}
+
+.revenue-card,
+.overview-card {
+  min-height: 300px;
+}
+
+.revenue-card .card-header h2 {
+  font-size: 28px;
 }
 
 .line-chart {

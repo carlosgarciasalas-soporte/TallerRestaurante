@@ -100,33 +100,47 @@ async function renderDashboard() {
   }).join(" ");
   const maxOrders = Math.max(...analytics.ordersOverview.map((item) => item.orders));
   const categoryTotal = analytics.topCategories.reduce((sum, item) => sum + item.value, 0) || 1;
+  const averageTicket = analytics.totals.orders ? Math.round(analytics.totals.revenue / analytics.totals.orders) : 0;
+  const kpis = [
+    { label: "Total Órdenes", value: analytics.totals.orders, trend: "↑ 15.5%", hint: "vs semana anterior", icon: "O", tone: "up" },
+    { label: "Total Clientes", value: analytics.totals.customers.toLocaleString("es-CO"), trend: "↑ 4.2%", hint: "vs semana anterior", icon: "C", tone: "up" },
+    { label: "Ingresos Totales", value: formatCurrency(analytics.totals.revenue), trend: "↓ 2.36%", hint: "vs semana anterior", icon: "$", tone: "down-good" },
+    { label: "Ticket Promedio", value: formatCurrency(averageTicket), trend: "↓ 1.25%", hint: "vs semana anterior", icon: "T", tone: "down" }
+  ];
 
   viewRoot.innerHTML = `
     <section class="admin-dashboard">
       <div class="dashboard-main">
         <section class="kpi-row">
-          <article class="kpi-card"><span>Total ordenes</span><strong>${analytics.totals.orders}</strong><small>+15.5%</small></article>
-          <article class="kpi-card"><span>Total clientes</span><strong>${analytics.totals.customers}</strong><small>+4.2%</small></article>
-          <article class="kpi-card"><span>Total ingresos</span><strong>${formatCurrency(analytics.totals.revenue)}</strong><small>+2.36%</small></article>
+          ${kpis.map((item) => `
+            <article class="kpi-card">
+              <span class="kpi-icon">${item.icon}</span>
+              <div>
+                <span>${item.label}</span>
+                <strong>${item.value}</strong>
+                <small class="${item.tone}">${item.trend}</small>
+                <em>${item.hint}</em>
+              </div>
+            </article>
+          `).join("")}
         </section>
 
         <section class="chart-card revenue-card">
           <div class="card-header">
-            <div><p class="eyebrow">Finanzas</p><h2>Total Revenue</h2></div>
-            <span>Last 8 Months</span>
+            <div><p class="eyebrow">Ingresos</p><h2>${formatCurrency(analytics.totals.revenue + analytics.expenses)}</h2></div>
+            <span>Últimos 8 meses</span>
           </div>
-          <strong>${formatCurrency(analytics.totals.revenue + analytics.expenses)}</strong>
           <svg class="line-chart" viewBox="0 0 330 132" role="img" aria-label="Revenue chart">
             <polyline points="${expensePoints}" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
             <polyline points="${revenuePoints}" fill="none" stroke="#f97316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
           </svg>
-          <div class="chart-legend"><span class="dot orange"></span>Income <span class="dot dark"></span>Expense</div>
+          <div class="chart-legend"><span class="dot orange"></span>Ingresos <span class="dot dark"></span>Gastos</div>
         </section>
 
         <section class="chart-card overview-card">
           <div class="card-header">
-            <div><p class="eyebrow">Ordenes</p><h2>Orders Overview</h2></div>
-            <span>This Week</span>
+            <div><p class="eyebrow">Órdenes</p><h2>Órdenes por día</h2></div>
+            <span>Esta semana</span>
           </div>
           <div class="bar-chart">
             ${analytics.ordersOverview.map((item) => `
@@ -140,14 +154,14 @@ async function renderDashboard() {
 
         <section class="chart-card split-card">
           <div>
-            <div class="card-header"><div><p class="eyebrow">Categorias</p><h2>Top Categories</h2></div></div>
+            <div class="card-header"><div><p class="eyebrow">Categorías</p><h2>Categorías más vendidas</h2></div></div>
             <div class="donut" style="--a:${Math.round(analytics.topCategories[0].value / categoryTotal * 100)}%; --b:${Math.round(analytics.topCategories[1].value / categoryTotal * 100)}%;"></div>
             <ul class="mini-list">
               ${analytics.topCategories.map((item) => `<li><span>${item.name}</span><strong>${Math.round(item.value / categoryTotal * 100)}%</strong></li>`).join("")}
             </ul>
           </div>
           <div>
-            <div class="card-header"><div><p class="eyebrow">Tipos</p><h2>Order Types</h2></div></div>
+            <div class="card-header"><div><p class="eyebrow">Tipos</p><h2>Tipos de órdenes</h2></div></div>
             <ul class="type-list">
               ${analytics.orderTypes.map((item) => `<li><span>${item.name}</span><strong>${item.value}</strong><small>${formatCurrency(item.amount)}</small></li>`).join("")}
             </ul>
@@ -156,12 +170,12 @@ async function renderDashboard() {
 
         <section class="chart-card recent-table">
           <div class="card-header">
-            <div><p class="eyebrow">Pedidos</p><h2>Recent Orders</h2></div>
+            <div><p class="eyebrow">Pedidos</p><h2>Pedidos recientes</h2></div>
             <button type="button" class="small-button" onclick="document.querySelector('[data-view=orders]').click()">Ver todos</button>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Order ID</th><th>Menu</th><th>Qty</th><th>Amount</th><th>Customer</th><th>Status</th></tr></thead>
+              <thead><tr><th>ID Pedido</th><th>Menú</th><th>Items</th><th>Total</th><th>Cliente</th><th>Estado</th></tr></thead>
               <tbody>
                 ${recentOrders.slice(0, 4).map((order) => `
                   <tr>
