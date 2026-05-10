@@ -206,15 +206,18 @@ async function renderDashboard() {
       <aside class="dashboard-side">
         <section class="chart-card">
           <div class="card-header">
-            <div><p class="eyebrow">Menu</p><h2>Trending Menus</h2></div>
-            <span>This Week</span>
+            <div><p class="eyebrow">Menú</p><h2>Menú en tendencia</h2></div>
+            <span>Esta semana</span>
           </div>
           <div class="trend-list">
-            ${topProducts.slice(0, 3).map((item) => `
+            ${topProducts.slice(0, 3).map((item, index) => `
               <article class="trend-card">
                 <img src="${item.product.imageUrl}" alt="${item.product.name}">
-                <h3>${item.product.name}</h3>
-                <p>${item.product.description}</p>
+                <div>
+                  <h3>${item.product.name}</h3>
+                  <p>${index === 0 ? "Más vendido" : `${item.quantity} unidades`}</p>
+                  <span>★ ${(4.8 - index * 0.1).toFixed(1)}</span>
+                </div>
                 <strong>${formatCurrency(item.product.price)}</strong>
               </article>
             `).join("")}
@@ -222,10 +225,11 @@ async function renderDashboard() {
         </section>
 
         <section class="chart-card">
-          <div class="card-header"><div><p class="eyebrow">Actividad</p><h2>Recent Activity</h2></div></div>
+          <div class="card-header"><div><p class="eyebrow">Actividad</p><h2>Actividad reciente</h2></div></div>
           <div class="activity-list">
             ${analytics.recentActivity.map((item) => `
               <div class="activity-item">
+                <i></i>
                 <strong>${item.title}</strong>
                 <span>${item.description}</span>
                 <small>${item.time}</small>
@@ -235,7 +239,7 @@ async function renderDashboard() {
         </section>
 
         <section class="chart-card">
-          <div class="card-header"><div><p class="eyebrow">Reviews</p><h2>Customer Reviews</h2></div></div>
+          <div class="card-header"><div><p class="eyebrow">Reseñas</p><h2>Reseñas recientes</h2></div></div>
           <div class="review-list">
             ${analytics.reviews.map((review) => `
               <article class="review-card">

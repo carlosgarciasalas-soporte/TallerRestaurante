@@ -85,8 +85,9 @@ class DashboardService {
         { title: "Nueva reserva", description: "Mesa para 6 personas confirmada para el 13/05.", time: "09:35 AM" }
       ],
       reviews: [
-        { customer: "Sarah M.", title: "Classic Italian Penne", rating: 5, text: "Servicio rapido y presentacion impecable.", imageUrl: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=500&q=80" },
-        { customer: "Michael R.", title: "Smoky Supreme Pizza", rating: 4.5, text: "Excelente sabor y buena temperatura.", imageUrl: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=500&q=80" }
+        { customer: "Ana Beltran", title: "Atencion excelente", rating: 5, text: "Excelente sabor y atencion. Volvere pronto.", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80" },
+        { customer: "Luis Fernando", title: "Porciones generosas", rating: 4.5, text: "Muy buenos platos y porciones generosas.", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80" },
+        { customer: "Camila Torres", title: "Ambiente agradable", rating: 5, text: "Ambiente agradable y comida deliciosa.", imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80" }
       ],
       trendingMenus: this.repositories.orders
         .all()
