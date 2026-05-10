@@ -3,60 +3,44 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SIGR - Linea Base</title>
+    <title>SIGR - Demo Restaurante</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main class="shell">
-      <section class="topbar">
-        <div>
-          <p class="eyebrow">Sistema Integral de Gestion de Restaurante</p>
-          <h1>SIGR</h1>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacion principal">
+        <div class="brand">
+          <span>S</span>
+          <div>
+            <strong>SIGR</strong>
+            <small>Demo operativa</small>
+          </div>
         </div>
-        <span id="apiStatus" class="status">Conectando</span>
-      </section>
 
-      <section class="summary" aria-label="Resumen operativo">
-        <article>
-          <span id="productsCount">0</span>
-          <p>Productos</p>
-        </article>
-        <article>
-          <span id="ordersCount">0</span>
-          <p>Pedidos</p>
-        </article>
-        <article>
-          <span id="reservationsCount">0</span>
-          <p>Reservas</p>
-        </article>
-        <article>
-          <span id="salesTotal">$0</span>
-          <p>Ventas del dia</p>
-        </article>
-      </section>
-
-      <section class="workspace">
-        <nav class="panel nav-panel" aria-label="Modulos SIGR">
-          <button type="button" data-endpoint="/api/products?page=1&limit=10" class="active">Productos</button>
-          <button type="button" data-endpoint="/api/categories?page=1&limit=10">Categorias</button>
-          <button type="button" data-endpoint="/api/orders?page=1&limit=10">Pedidos</button>
-          <button type="button" data-endpoint="/api/reservations?page=1&limit=10">Reservas</button>
-          <button type="button" data-endpoint="/api/reports/orders-by-status">Estados</button>
-          <button type="button" data-endpoint="/api/reports/top-products">Mas vendidos</button>
+        <nav class="menu">
+          <button type="button" class="active" data-view="dashboard">Dashboard</button>
+          <button type="button" data-view="products">Productos</button>
+          <button type="button" data-view="customers">Clientes</button>
+          <button type="button" data-view="orders">Pedidos</button>
         </nav>
 
-        <section class="panel output-panel">
-          <div class="panel-header">
-            <div>
-              <p class="eyebrow">Respuesta API</p>
-              <h2 id="currentEndpoint">/api/products</h2>
-            </div>
-            <button type="button" id="refreshButton">Actualizar</button>
+        <div class="sidebar-foot">
+          <span id="apiStatus" class="status">Conectando</span>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Sistema Integral de Gestion de Restaurante</p>
+            <h1 id="viewTitle">Dashboard</h1>
           </div>
-          <pre id="responseBox">{}</pre>
-        </section>
-      </section>
-    </main>
+          <button type="button" id="refreshButton">Actualizar</button>
+        </header>
+
+        <section id="viewRoot" class="view-root" aria-live="polite"></section>
+      </main>
+    </div>
 
     <script src="/app.js"></script>
   </body>

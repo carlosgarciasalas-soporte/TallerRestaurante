@@ -1,20 +1,19 @@
 const state = {
-  endpoint: "/api/products?page=1&limit=10"
+  view: "dashboard"
+};
+
+const titles = {
+  dashboard: "Dashboard",
+  products: "Productos",
+  customers: "Clientes",
+  orders: "Pedidos"
 };
 
 const statusEl = document.querySelector("#apiStatus");
-const responseBox = document.querySelector("#responseBox");
-const currentEndpoint = document.querySelector("#currentEndpoint");
+const viewTitle = document.querySelector("#viewTitle");
+const viewRoot = document.querySelector("#viewRoot");
 const refreshButton = document.querySelector("#refreshButton");
-const navButtons = document.querySelectorAll("[data-endpoint]");
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0
-  }).format(value);
-}
+const menuButtons = document.querySelectorAll("[data-view]");
 
 async function fetchJson(endpoint) {
   const response = await fetch(endpoint);
@@ -24,54 +23,65 @@ async function fetchJson(endpoint) {
   return response.json();
 }
 
-async function loadSummary() {
-  const [products, orders, reservations, sales] = await Promise.all([
-    fetchJson("/api/products?page=1&limit=1"),
-    fetchJson("/api/orders?page=1&limit=1"),
-    fetchJson("/api/reservations?page=1&limit=1"),
-    fetchJson("/api/reports/daily-sales")
-  ]);
-
-  document.querySelector("#productsCount").textContent = products.meta.total;
-  document.querySelector("#ordersCount").textContent = orders.meta.total;
-  document.querySelector("#reservationsCount").textContent = reservations.meta.total;
-  document.querySelector("#salesTotal").textContent = formatCurrency(sales.totalSales);
+function setStatus(ok) {
+  statusEl.textContent = ok ? "API activa" : "Sin conexion";
+  statusEl.className = ok ? "status ok" : "status error";
 }
 
-async function loadEndpoint(endpoint) {
-  state.endpoint = endpoint;
-  currentEndpoint.textContent = endpoint;
-  responseBox.textContent = "Cargando...";
-
-  const data = await fetchJson(endpoint);
-  responseBox.textContent = JSON.stringify(data, null, 2);
+function setView(view) {
+  state.view = view;
+  viewTitle.textContent = titles[view];
+  menuButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+  render();
 }
 
-async function boot() {
+function renderPlaceholder(message) {
+  viewRoot.innerHTML = `
+    <section class="empty-state">
+      <p class="eyebrow">Demo SIGR</p>
+      <h2>${message}</h2>
+      <p>Esta vista se conectara con los endpoints de la linea base en la siguiente fase.</p>
+    </section>
+  `;
+}
+
+async function renderDashboard() {
+  renderPlaceholder("Dashboard operativo");
+}
+
+async function renderProducts() {
+  renderPlaceholder("Catalogo de productos");
+}
+
+async function renderCustomers() {
+  renderPlaceholder("Listado de clientes");
+}
+
+async function renderOrders() {
+  renderPlaceholder("Pedidos maestro-detalle");
+}
+
+async function render() {
   try {
     await fetchJson("/api/health");
-    statusEl.textContent = "API activa";
-    statusEl.className = "status ok";
-    await loadSummary();
-    await loadEndpoint(state.endpoint);
+    setStatus(true);
+
+    if (state.view === "dashboard") await renderDashboard();
+    if (state.view === "products") await renderProducts();
+    if (state.view === "customers") await renderCustomers();
+    if (state.view === "orders") await renderOrders();
   } catch (error) {
-    statusEl.textContent = "Sin conexion";
-    statusEl.className = "status error";
-    responseBox.textContent = error.message;
+    setStatus(false);
+    viewRoot.innerHTML = `<section class="empty-state"><h2>No fue posible conectar con la API</h2><p>${error.message}</p></section>`;
   }
 }
 
-navButtons.forEach((button) => {
-  button.addEventListener("click", async () => {
-    navButtons.forEach((item) => item.classList.remove("active"));
-    button.classList.add("active");
-    await loadEndpoint(button.dataset.endpoint);
-  });
+menuButtons.forEach((button) => {
+  button.addEventListener("click", () => setView(button.dataset.view));
 });
 
-refreshButton.addEventListener("click", async () => {
-  await loadSummary();
-  await loadEndpoint(state.endpoint);
-});
+refreshButton.addEventListener("click", render);
 
-boot();
+render();
