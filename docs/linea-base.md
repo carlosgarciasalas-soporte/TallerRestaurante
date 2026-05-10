@@ -33,6 +33,8 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - Modulo de pagos, cierre de caja y reportes.
 - Dashboard de demostracion con Bento Grid, metricas operativas y productos destacados.
 - Vistas paginadas para productos y clientes.
+- Formularios modales para agregar y modificar clientes.
+- Formularios modales para agregar y modificar productos.
 - Panel lateral de detalle para pedidos.
 - Pruebas basicas de integracion.
 - Documentacion tecnica minima.
@@ -88,3 +90,5 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 | 37a4fe9 | feat | Productos y clientes paginados. | Controles visuales y paginacion de servidor. |
 | c0f3d60 | feat | Pedidos maestro-detalle. | Drawer lateral con desglose de items y total. |
 | 5e936fb | style | Pulido visual. | Badges de estado y mejoras de lectura. |
+| d182b13 | feat | CRUD visual de clientes. | Formulario modal para agregar y modificar clientes. |
+| 40f9422 | feat | CRUD visual de productos. | Formulario modal para agregar y modificar productos. |
