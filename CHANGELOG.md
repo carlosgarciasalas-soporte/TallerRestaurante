@@ -11,3 +11,4 @@
 - Implementacion de pruebas de integracion con Jest y Supertest.
 - Creacion de README, licencia y documento tecnico de linea base.
 - Preparacion de configuracion para despliegue en Vercel.
+- Ampliacion del seed demo con 15 productos, 10 clientes, 5 pedidos, imagenes de productos y categorias operativas.

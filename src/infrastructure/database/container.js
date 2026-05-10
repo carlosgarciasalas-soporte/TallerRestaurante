@@ -1,6 +1,8 @@
 const { createUser } = require("../../domain/entities/User");
 const { createCategory } = require("../../domain/entities/Category");
 const { createProduct } = require("../../domain/entities/Product");
+const { createOrder } = require("../../domain/entities/Order");
+const { createPayment } = require("../../domain/entities/Payment");
 const { createReservation } = require("../../domain/entities/Reservation");
 const { InMemoryRepository } = require("../repositories/InMemoryRepository");
 const { CrudService } = require("../../application/use-cases/CrudService");
@@ -49,6 +51,8 @@ function seedContainer(repositories) {
   seedData.users.forEach((item) => repositories.users.create(createUser(item)));
   seedData.categories.forEach((item) => repositories.categories.create(createCategory(item)));
   seedData.products.forEach((item) => repositories.products.create(createProduct(item)));
+  seedData.orders.forEach((item) => repositories.orders.create(createOrder(item)));
+  seedData.payments.forEach((item) => repositories.payments.create(createPayment(item)));
   seedData.reservations.forEach((item) => repositories.reservations.create(createReservation(item)));
 }
 
