@@ -99,6 +99,11 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 | 2919ab6 | feat | Redisenho de dashboard administrativo. | UI inspirada en dashboard SaaS de restaurante con graficas y panel lateral. |
 | 0919f48 | docs | Documentacion de dashboard administrativo. | README y linea base actualizados con analitica. |
 | e9827ed | feat | Ofertas del dia. | Slider automatico con tres pancerottis y ajustes de pantalla completa. |
+| 1730e9e | style | Rebranding visual restaurante. | Sidebar blanca, paleta naranja y logo de pancerotti con marca Restaurante. |
+| fa876fc | style | Header ejecutivo. | Saludo, buscador, acciones y perfil de usuario estilo dashboard moderno. |
+| b746f84 | style | Cards y layout del dashboard. | KPIs con ordenes, clientes, ingresos y ticket promedio. |
+| d3cc08a | style | Visualizaciones del dashboard. | Graficas de ingresos, ordenes por dia y tipos de orden mejoradas. |
+| 3fe37d9 | style | Panel derecho del dashboard. | Menus en tendencia, actividad reciente y resenas con avatares. |
 
 ## Estructura de Datos
 

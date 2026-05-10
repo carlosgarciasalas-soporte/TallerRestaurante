@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 - Redisenho visual dashboard restaurante
+
+- Aplicacion de rebranding visual con logo de pancerotti y marca Restaurante.
+- Implementacion de header ejecutivo con saludo, buscador, acciones y perfil.
+- Redisenho de tarjetas KPI con total de ordenes, clientes, ingresos y ticket promedio.
+- Mejora de visualizaciones del dashboard con grafica de ingresos, ordenes por dia y barras de tipos de orden.
+- Ajuste del panel derecho con menu en tendencia, actividad reciente y resenas con avatares.
+
 ## 1.0.0 - Linea base inicial
 
 - Inicializacion del proyecto SIGR con Node.js y Express.
