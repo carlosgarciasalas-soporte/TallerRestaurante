@@ -7,6 +7,7 @@ const state = {
 
 const titles = {
   dashboard: "Dashboard",
+  offers: "Ofertas del dia",
   products: "Productos",
   customers: "Clientes",
   orders: "Pedidos"
@@ -357,6 +358,54 @@ async function renderProducts() {
   });
 }
 
+async function renderOffers() {
+  const offers = [
+    {
+      name: "Pancerotti de pollo",
+      description: "Masa dorada rellena de pollo sazonado, queso fundido y salsa de la casa.",
+      price: 12000,
+      imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Panzerotti-01.jpg"
+    },
+    {
+      name: "Pancerotti hawaiano",
+      description: "Relleno de jamon, queso mozzarella y pina en trozos dulces.",
+      price: 13000,
+      imageUrl: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+      name: "Pancerotti pollo especial",
+      description: "Pollo, champinones, queso doble crema y toque de oregano.",
+      price: 14500,
+      imageUrl: "https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?auto=format&fit=crop&w=900&q=80"
+    }
+  ];
+
+  viewRoot.innerHTML = `
+    <section class="offers-page">
+      <div class="offers-copy">
+        <p class="eyebrow">Promociones</p>
+        <h2>Ofertas del dia</h2>
+        <p>Tres pancerottis destacados rotando automaticamente para una experiencia tipo vitrina digital.</p>
+      </div>
+      <div class="offer-slider" aria-label="Ofertas automaticas">
+        <div class="offer-track">
+          ${offers.map((offer) => `
+            <article class="offer-slide">
+              <img src="${offer.imageUrl}" alt="${offer.name}">
+              <div>
+                <span class="badge status-disponible">Oferta activa</span>
+                <h3>${offer.name}</h3>
+                <p>${offer.description}</p>
+                <strong>${formatCurrency(offer.price)}</strong>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 async function renderCustomers() {
   viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
 
@@ -447,6 +496,7 @@ async function render() {
     setStatus(true);
 
     if (state.view === "dashboard") await renderDashboard();
+    if (state.view === "offers") await renderOffers();
     if (state.view === "products") await renderProducts();
     if (state.view === "customers") await renderCustomers();
     if (state.view === "orders") await renderOrders();
@@ -460,7 +510,9 @@ menuButtons.forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
 });
 
-refreshButton.addEventListener("click", render);
+if (refreshButton) {
+  refreshButton.addEventListener("click", render);
+}
 
 render();
 

@@ -22,3 +22,4 @@
 - Incorporacion de formulario modal para agregar y modificar productos desde la demo.
 - Incorporacion de analitica backend para dashboard administrativo.
 - Redisenho del dashboard administrativo con metricas, graficas, actividad, resenas y menus tendencia.
+- Ajuste de marca visual, pantalla completa y vista de ofertas del dia con slider automatico de pancerottis.
