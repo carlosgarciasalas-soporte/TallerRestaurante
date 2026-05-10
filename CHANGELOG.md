@@ -15,3 +15,4 @@
 - Incorporacion de endpoints de dashboard y respuestas de pedidos enriquecidas para la demo.
 - Implementacion de dashboard Bento Grid con metricas, ultimos pedidos y productos mas vendidos.
 - Implementacion de vistas paginadas para productos y clientes con controles visuales.
+- Implementacion de pedidos maestro-detalle con panel lateral de desglose.

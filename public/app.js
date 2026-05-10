@@ -17,6 +17,8 @@ const viewTitle = document.querySelector("#viewTitle");
 const viewRoot = document.querySelector("#viewRoot");
 const refreshButton = document.querySelector("#refreshButton");
 const menuButtons = document.querySelectorAll("[data-view]");
+const drawer = document.querySelector("#orderDrawer");
+const drawerBackdrop = document.querySelector("#drawerBackdrop");
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("es-CO", {
@@ -220,7 +222,36 @@ async function renderCustomers() {
 }
 
 async function renderOrders() {
-  renderPlaceholder("Pedidos maestro-detalle");
+  viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
+
+  const result = await fetchJson("/api/orders?page=1&limit=10");
+
+  viewRoot.innerHTML = `
+    <section class="data-panel">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Maestro</p>
+          <h2>Pedidos recientes</h2>
+        </div>
+        <span>${result.meta.total} pedidos</span>
+      </div>
+      <div class="order-master">
+        ${result.data.map((order) => `
+          <button type="button" class="order-master-row" data-order-id="${order.id}">
+            <div>
+              <strong>#${order.id} - ${order.customer ? order.customer.name : "Cliente"}</strong>
+              <span>Mesa ${order.tableNumber || "N/A"} · ${order.items.length} items · ${formatCurrency(order.total)}</span>
+            </div>
+            <span class="badge">${order.status}</span>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+
+  document.querySelectorAll("[data-order-id]").forEach((button) => {
+    button.addEventListener("click", () => openOrderDrawer(button.dataset.orderId));
+  });
 }
 
 async function render() {
@@ -270,3 +301,70 @@ function bindPagination() {
     });
   });
 }
+
+async function openOrderDrawer(orderId) {
+  const order = await fetchJson(`/api/orders/${orderId}`);
+
+  drawer.innerHTML = `
+    <div class="drawer-header">
+      <div>
+        <p class="eyebrow">Detalle</p>
+        <h2>Pedido #${order.id}</h2>
+      </div>
+      <button type="button" id="closeDrawer">Cerrar</button>
+    </div>
+
+    <section class="drawer-section">
+      <p>Cliente</p>
+      <strong>${order.customer ? order.customer.name : "Cliente no disponible"}</strong>
+      <span>${order.customer ? order.customer.email : ""}</span>
+    </section>
+
+    <section class="drawer-section">
+      <p>Estado</p>
+      <span class="badge">${order.status}</span>
+      <span>Mesa ${order.tableNumber || "N/A"}</span>
+    </section>
+
+    <section class="drawer-section">
+      <p>Items</p>
+      <div class="drawer-items">
+        ${order.items.map((item) => `
+          <div class="drawer-item">
+            <img src="${item.product.imageUrl}" alt="${item.product.name}">
+            <div>
+              <strong>${item.product.name}</strong>
+              <span>${item.quantity} x ${formatCurrency(item.unitPrice)}</span>
+            </div>
+            <strong>${formatCurrency(item.subtotal)}</strong>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+
+    <div class="drawer-total">
+      <span>Total</span>
+      <strong>${formatCurrency(order.total)}</strong>
+    </div>
+  `;
+
+  drawer.hidden = false;
+  drawerBackdrop.hidden = false;
+  requestAnimationFrame(() => {
+    drawer.classList.add("open");
+    drawerBackdrop.classList.add("open");
+  });
+
+  document.querySelector("#closeDrawer").addEventListener("click", closeOrderDrawer);
+}
+
+function closeOrderDrawer() {
+  drawer.classList.remove("open");
+  drawerBackdrop.classList.remove("open");
+  setTimeout(() => {
+    drawer.hidden = true;
+    drawerBackdrop.hidden = true;
+  }, 180);
+}
+
+drawerBackdrop.addEventListener("click", closeOrderDrawer);
