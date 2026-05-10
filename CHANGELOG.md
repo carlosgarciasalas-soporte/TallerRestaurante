@@ -13,3 +13,4 @@
 - Preparacion de configuracion para despliegue en Vercel.
 - Ampliacion del seed demo con 15 productos, 10 clientes, 5 pedidos, imagenes de productos y categorias operativas.
 - Incorporacion de endpoints de dashboard y respuestas de pedidos enriquecidas para la demo.
+- Implementacion de dashboard Bento Grid con metricas, ultimos pedidos y productos mas vendidos.
