@@ -35,6 +35,10 @@ function createApiRouter(services) {
     res.json(services.dashboard.recentOrders(req.query.limit));
   }));
 
+  router.get("/dashboard/analytics", asyncHandler(async (req, res) => {
+    res.json(services.dashboard.analytics());
+  }));
+
   router.get("/orders", asyncHandler(async (req, res) => {
     res.json(services.orders.list(req.query));
   }));

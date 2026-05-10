@@ -66,6 +66,16 @@ describe("SIGR Linea Base API", () => {
     expect(response.body.activeOrders).toBeGreaterThan(0);
   });
 
+  test("expone analitica para dashboard administrativo", async () => {
+    const response = await request(app).get("/api/dashboard/analytics");
+
+    expect(response.status).toBe(200);
+    expect(response.body.totals.orders).toBe(5);
+    expect(response.body.revenueSeries.length).toBeGreaterThan(0);
+    expect(response.body.ordersOverview.length).toBe(7);
+    expect(response.body.reviews.length).toBeGreaterThan(0);
+  });
+
   test("filtra clientes y conserva paginacion de servidor", async () => {
     const response = await request(app).get("/api/users?page=1&limit=6&role=cliente");
 

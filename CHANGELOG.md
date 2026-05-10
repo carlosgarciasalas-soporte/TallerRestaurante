@@ -20,3 +20,4 @@
 - Documentacion de trazabilidad de commits para la linea base demo.
 - Incorporacion de formulario modal para agregar y modificar clientes desde la demo.
 - Incorporacion de formulario modal para agregar y modificar productos desde la demo.
+- Incorporacion de analitica backend para dashboard administrativo.
