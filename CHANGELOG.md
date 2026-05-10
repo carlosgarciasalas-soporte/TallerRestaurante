@@ -19,3 +19,4 @@
 - Pulido visual de estados, badges y lectura general de la demo.
 - Documentacion de trazabilidad de commits para la linea base demo.
 - Incorporacion de formulario modal para agregar y modificar clientes desde la demo.
+- Incorporacion de formulario modal para agregar y modificar productos desde la demo.

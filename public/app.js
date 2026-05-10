@@ -178,16 +178,18 @@ async function renderProducts() {
   viewRoot.innerHTML = `
     <section class="toolbar">
       <p>${result.meta.total} productos registrados</p>
+      <button type="button" id="createProductButton">Agregar producto</button>
     </section>
     <section class="product-grid">
       ${result.data.map((product) => `
-        <article class="product-card">
+        <article class="product-card" data-product-card="${product.id}">
           <img src="${product.imageUrl}" alt="${product.name}">
           <div>
             <span class="${product.available ? "badge status-disponible" : "badge status-cancelado"}">${product.available ? "Disponible" : "Agotado"}</span>
             <h2>${product.name}</h2>
             <p>${product.description}</p>
             <strong>${formatCurrency(product.price)}</strong>
+            <button type="button" class="small-button product-edit" data-edit-product="${product.id}">Editar</button>
           </div>
         </article>
       `).join("")}
@@ -195,6 +197,13 @@ async function renderProducts() {
     ${renderPagination("products", result.meta)}
   `;
   bindPagination();
+  document.querySelector("#createProductButton").addEventListener("click", () => openProductModal());
+  document.querySelectorAll("[data-edit-product]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const product = await fetchJson(`/api/products/${button.dataset.editProduct}`);
+      openProductModal(product);
+    });
+  });
 }
 
 async function renderCustomers() {
@@ -461,6 +470,82 @@ function openCustomerModal(customer = null) {
       });
       closeModal();
       await renderCustomers();
+    } catch (error) {
+      showModalError(error.message);
+    }
+  });
+}
+
+async function openProductModal(product = null) {
+  const isEdit = Boolean(product);
+  const categories = await fetchJson("/api/categories?page=1&limit=20");
+  modal.innerHTML = `
+    <form id="productForm" class="form-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Productos</p>
+          <h2>${isEdit ? "Modificar producto" : "Agregar producto"}</h2>
+        </div>
+        <button type="button" id="closeModal">Cerrar</button>
+      </div>
+      <label>
+        Nombre
+        <input name="name" required value="${product ? product.name : ""}">
+      </label>
+      <label>
+        Categoria
+        <select name="categoryId" required>
+          ${categories.data.map((category) => `
+            <option value="${category.id}" ${product && product.categoryId === category.id ? "selected" : ""}>${category.name}</option>
+          `).join("")}
+        </select>
+      </label>
+      <label>
+        Precio
+        <input name="price" type="number" min="1" required value="${product ? product.price : ""}">
+      </label>
+      <label>
+        URL de imagen
+        <input name="imageUrl" type="url" required value="${product ? product.imageUrl : ""}">
+      </label>
+      <label>
+        Descripcion
+        <textarea name="description" required>${product ? product.description : ""}</textarea>
+      </label>
+      <label class="checkbox-row">
+        <input name="available" type="checkbox" ${!product || product.available ? "checked" : ""}>
+        Producto disponible
+      </label>
+      <p id="modalError" class="form-error" hidden></p>
+      <div class="form-actions">
+        <button type="button" id="cancelModal">Cancelar</button>
+        <button type="submit">${isEdit ? "Guardar cambios" : "Crear producto"}</button>
+      </div>
+    </form>
+  `;
+
+  showModal();
+  document.querySelector("#closeModal").addEventListener("click", closeModal);
+  document.querySelector("#cancelModal").addEventListener("click", closeModal);
+  document.querySelector("#productForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      name: form.get("name").trim(),
+      categoryId: form.get("categoryId"),
+      price: Number(form.get("price")),
+      imageUrl: form.get("imageUrl").trim(),
+      description: form.get("description").trim(),
+      available: form.get("available") === "on"
+    };
+
+    try {
+      await apiRequest(isEdit ? `/api/products/${product.id}` : "/api/products", {
+        method: isEdit ? "PUT" : "POST",
+        body: JSON.stringify(payload)
+      });
+      closeModal();
+      await renderProducts();
     } catch (error) {
       showModalError(error.message);
     }

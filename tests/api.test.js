@@ -97,6 +97,30 @@ describe("SIGR Linea Base API", () => {
     expect(updated.body.phone).toBe("3000009999");
   });
 
+  test("crea y modifica productos desde el CRUD", async () => {
+    const created = await request(app)
+      .post("/api/products")
+      .send({
+        name: "Producto Demo",
+        categoryId: "1",
+        description: "Producto creado para prueba CRUD.",
+        price: 12345,
+        imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80",
+        available: true
+      });
+
+    expect(created.status).toBe(201);
+    expect(created.body.name).toBe("Producto Demo");
+
+    const updated = await request(app)
+      .put(`/api/products/${created.body.id}`)
+      .send({ name: "Producto Demo Editado", price: 15000 });
+
+    expect(updated.status).toBe(200);
+    expect(updated.body.name).toBe("Producto Demo Editado");
+    expect(updated.body.price).toBe(15000);
+  });
+
   test("registra pago y genera reporte diario de ventas", async () => {
     const order = await request(app)
       .post("/api/orders")
