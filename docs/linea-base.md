@@ -31,6 +31,9 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - Modulo de pedidos con relacion maestro-detalle.
 - Modulo de reservas por fecha y hora.
 - Modulo de pagos, cierre de caja y reportes.
+- Dashboard de demostracion con Bento Grid, metricas operativas y productos destacados.
+- Vistas paginadas para productos y clientes.
+- Panel lateral de detalle para pedidos.
 - Pruebas basicas de integracion.
 - Documentacion tecnica minima.
 
@@ -72,3 +75,16 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 **Validado por:** grupo de desarrollo  
 **Responsable de aprobacion:** coordinador del equipo o rol designado  
 **Estado:** linea base inicial creada
+
+## Historial de Cambios de la Linea Base
+
+| Commit | Tipo | Descripcion | Evidencia |
+| --- | --- | --- | --- |
+| 99aeece | chore | Inicializacion de la linea base SIGR. | API base, tests, README y configuracion Vercel. |
+| ae3a742 | feat | Ampliacion de datos demo. | 15 productos con imagenes, 10 clientes y 5 pedidos. |
+| a5e493b | feat | Endpoints de dashboard. | Resumen operativo y ultimos pedidos. |
+| d603930 | feat | Layout demo. | Navegacion principal y sidebar glassmorphism. |
+| 0c1782d | feat | Dashboard Bento. | Metricas, ultimos pedidos y productos mas vendidos. |
+| 37a4fe9 | feat | Productos y clientes paginados. | Controles visuales y paginacion de servidor. |
+| c0f3d60 | feat | Pedidos maestro-detalle. | Drawer lateral con desglose de items y total. |
+| 5e936fb | style | Pulido visual. | Badges de estado y mejoras de lectura. |

@@ -6,6 +6,8 @@ Linea base inicial del sistema SIGR para la actividad **AA2: Taller Grupal - Lin
 
 SIGR es una API web para gestionar operaciones basicas de un restaurante: usuarios, menu digital, pedidos, reservas, pagos, caja y reportes. Esta version funciona como linea base estable para control de cambios y trazabilidad.
 
+La demo web incluye dashboard tipo Bento Grid, productos con imagenes, clientes paginados y pedidos maestro-detalle con panel lateral.
+
 ## Stack
 
 - Node.js
@@ -121,3 +123,4 @@ Esta version cubre los criterios iniciales:
 - Validaciones basicas.
 - Pruebas de integracion.
 - Documentacion minima.
+- Trazabilidad por commits documentados en `docs/linea-base.md`.
