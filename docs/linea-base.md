@@ -6,7 +6,7 @@
 **Sistema:** Sistema Integral de Gestion de Restaurante (SIGR)  
 **Curso:** Gestion del Software  
 **Fecha:** 10/05/2026  
-**Integrantes:** Pendiente por completar
+**Integrantes:** Carlos Garcia Salas
 
 ## Introduccion
 
@@ -45,7 +45,7 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - Herramienta utilizada: Git.
 - Rama principal estable recomendada: `main`.
 - Tag recomendado para la entrega: `v0.1.0-linea-base`.
-- Repositorio oficial: pendiente por definir.
+- Repositorio oficial: `https://github.com/carlosgarciasalas-soporte/TallerRestaurante`.
 
 ## Criterios de Validacion
 
@@ -56,6 +56,7 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - Los pedidos implementan maestro-detalle.
 - Las pruebas de integracion se ejecutan mediante `npm test`.
 - La documentacion minima esta incluida.
+- La linea base queda identificada con el tag `v0.1.0-linea-base`.
 
 ## Herramientas de Soporte
 
@@ -71,12 +72,13 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - `CHANGELOG.md`: historial de cambios de la linea base.
 - `LICENSE.txt`: licencia MIT.
 - `docs/linea-base.md`: fuente del documento tecnico para exportar a PDF.
+- `docs/assets/dashboard-preview.png`: imagen generada automaticamente para evidenciar la vista inicial del dashboard.
 
 ## Validacion y Aprobacion
 
 **Fecha de creacion:** 10/05/2026  
-**Validado por:** grupo de desarrollo  
-**Responsable de aprobacion:** coordinador del equipo o rol designado  
+**Validado por:** Carlos Garcia Salas  
+**Responsable de aprobacion:** Carlos Garcia Salas  
 **Estado:** linea base inicial creada
 
 ## Historial de Cambios de la Linea Base
@@ -95,3 +97,19 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 | 40f9422 | feat | CRUD visual de productos. | Formulario modal para agregar y modificar productos. |
 | 3a20f32 | feat | Analitica de dashboard administrativo. | Endpoint con revenue, ordenes, categorias, actividad y resenas. |
 | 2919ab6 | feat | Redisenho de dashboard administrativo. | UI inspirada en dashboard SaaS de restaurante con graficas y panel lateral. |
+| 0919f48 | docs | Documentacion de dashboard administrativo. | README y linea base actualizados con analitica. |
+| e9827ed | feat | Ofertas del dia. | Slider automatico con tres pancerottis y ajustes de pantalla completa. |
+
+## Estructura de Datos
+
+La linea base usa repositorios en memoria ubicados en `src/infrastructure/repositories`. Los datos iniciales se cargan desde `src/infrastructure/database/seedData.js` e incluyen usuarios, categorias, productos, pedidos, pagos y reservas.
+
+Esta decision permite ejecutar la demo sin instalar un motor de base de datos. Como limitacion, los datos creados desde la interfaz se reinician al reiniciar el servidor.
+
+## Manual de Despliegue
+
+1. Instalar dependencias con `npm install`.
+2. Ejecutar pruebas con `npm test`.
+3. Ejecutar localmente con `npm start`.
+4. Abrir `http://localhost:3000`.
+5. Para Vercel, conectar el repositorio de GitHub y desplegar. El archivo `vercel.json` redirige `/api/*` hacia el backend Express y sirve la interfaz desde `public/`.

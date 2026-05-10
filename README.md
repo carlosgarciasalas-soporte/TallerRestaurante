@@ -2,6 +2,8 @@
 
 Linea base inicial del sistema SIGR para la actividad **AA2: Taller Grupal - Linea Base Software de Restaurante**.
 
+![Vista inicial del dashboard del restaurante](docs/assets/dashboard-preview.png)
+
 ## Descripcion
 
 SIGR es una API web para gestionar operaciones basicas de un restaurante: usuarios, menu digital, pedidos, reservas, pagos, caja y reportes. Esta version funciona como linea base estable para control de cambios y trazabilidad.
@@ -15,6 +17,12 @@ La demo web incluye dashboard administrativo con metricas, graficas, menus tende
 - Jest
 - Supertest
 - Repositorios en memoria
+
+## Repositorio
+
+```text
+https://github.com/carlosgarciasalas-soporte/TallerRestaurante
+```
 
 ## Instalacion
 
@@ -80,6 +88,10 @@ vercel
 ```
 
 Nota: esta linea base usa repositorios en memoria. En Vercel los datos pueden reiniciarse entre ejecuciones, asi que es suficiente para demo academica, pero para produccion debe conectarse una base de datos externa.
+
+## Persistencia de datos
+
+La version de linea base usa repositorios en memoria para facilitar la demostracion, las pruebas y el despliegue academico. Esto significa que los datos creados desde la interfaz se conservan durante la ejecucion actual del servidor, pero se reinician cuando el proceso vuelve a iniciar.
 
 ## Endpoints principales
 
