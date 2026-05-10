@@ -134,6 +134,9 @@ async function renderDashboard() {
             <polyline points="${expensePoints}" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
             <polyline points="${revenuePoints}" fill="none" stroke="#f97316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
           </svg>
+          <div class="axis-row">
+            ${analytics.revenueSeries.map((item) => `<span>${item.label}</span>`).join("")}
+          </div>
           <div class="chart-legend"><span class="dot orange"></span>Ingresos <span class="dot dark"></span>Gastos</div>
         </section>
 
@@ -143,8 +146,9 @@ async function renderDashboard() {
             <span>Esta semana</span>
           </div>
           <div class="bar-chart">
-            ${analytics.ordersOverview.map((item) => `
-              <div class="bar-item">
+            ${analytics.ordersOverview.map((item, index) => `
+              <div class="bar-item ${index === 3 ? "active" : ""}">
+                ${index === 3 ? `<strong>Jue<br>${item.orders} órdenes</strong>` : ""}
                 <span style="height:${Math.max(28, Math.round(item.orders / maxOrders * 150))}px"></span>
                 <small>${item.label}</small>
               </div>
@@ -163,7 +167,13 @@ async function renderDashboard() {
           <div>
             <div class="card-header"><div><p class="eyebrow">Tipos</p><h2>Tipos de órdenes</h2></div></div>
             <ul class="type-list">
-              ${analytics.orderTypes.map((item) => `<li><span>${item.name}</span><strong>${item.value}</strong><small>${formatCurrency(item.amount)}</small></li>`).join("")}
+              ${analytics.orderTypes.map((item) => `
+                <li>
+                  <span>${item.name}</span>
+                  <i><b style="width:${Math.max(18, Math.round(item.value / Math.max(...analytics.orderTypes.map((type) => type.value)) * 100))}%"></b></i>
+                  <strong>${item.value}</strong>
+                </li>
+              `).join("")}
             </ul>
           </div>
         </section>
