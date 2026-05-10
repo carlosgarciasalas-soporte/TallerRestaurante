@@ -27,6 +27,14 @@ function createApiRouter(services) {
   router.use("/products", createCrudRouter(services.products, ["categoryId", "name", "price"]));
   router.use("/reservations", createCrudRouter(services.reservations, ["customerName", "phone", "date", "time", "people"]));
 
+  router.get("/dashboard/summary", asyncHandler(async (req, res) => {
+    res.json(services.dashboard.summary());
+  }));
+
+  router.get("/dashboard/recent-orders", asyncHandler(async (req, res) => {
+    res.json(services.dashboard.recentOrders(req.query.limit));
+  }));
+
   router.get("/orders", asyncHandler(async (req, res) => {
     res.json(services.orders.list(req.query));
   }));

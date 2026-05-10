@@ -93,6 +93,8 @@ Nota: esta linea base usa repositorios en memoria. En Vercel los datos pueden re
 - `GET /api/reports/daily-sales`
 - `GET /api/reports/orders-by-status`
 - `GET /api/reports/top-products`
+- `GET /api/dashboard/summary`
+- `GET /api/dashboard/recent-orders`
 
 Los endpoints de listado soportan `page` y `limit`.
 

@@ -10,7 +10,11 @@ class OrderService {
   }
 
   list(query) {
-    return this.orderRepository.findAll(getPagination(query));
+    const result = this.orderRepository.findAll(getPagination(query));
+    return {
+      ...result,
+      data: result.data.map((order) => this.enrich(order))
+    };
   }
 
   get(id) {
@@ -19,13 +23,7 @@ class OrderService {
       throw new AppError("Pedido no encontrado.", 404);
     }
 
-    return {
-      ...order,
-      items: order.items.map((item) => ({
-        ...item,
-        product: this.productRepository.findById(item.productId)
-      }))
-    };
+    return this.enrich(order);
   }
 
   create(payload) {
@@ -75,6 +73,17 @@ class OrderService {
 
     this.orderRepository.delete(id);
     return { deleted: true };
+  }
+
+  enrich(order) {
+    return {
+      ...order,
+      customer: this.userRepository.findById(order.customerId),
+      items: order.items.map((item) => ({
+        ...item,
+        product: this.productRepository.findById(item.productId)
+      }))
+    };
   }
 }
 

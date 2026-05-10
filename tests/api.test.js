@@ -54,6 +54,16 @@ describe("SIGR Linea Base API", () => {
     expect(fetched.status).toBe(200);
     expect(fetched.body.items).toHaveLength(2);
     expect(fetched.body.items[0].product.name).toBe("Empanadas de carne");
+    expect(fetched.body.customer.name).toBe("Carlos Cliente");
+  });
+
+  test("expone resumen de dashboard para la demo", async () => {
+    const response = await request(app).get("/api/dashboard/summary");
+
+    expect(response.status).toBe(200);
+    expect(response.body.products).toBe(15);
+    expect(response.body.customers).toBe(10);
+    expect(response.body.activeOrders).toBeGreaterThan(0);
   });
 
   test("registra pago y genera reporte diario de ventas", async () => {

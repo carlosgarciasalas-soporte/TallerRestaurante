@@ -10,6 +10,7 @@ const { AuthService } = require("../../application/use-cases/AuthService");
 const { OrderService } = require("../../application/use-cases/OrderService");
 const { PaymentService } = require("../../application/use-cases/PaymentService");
 const { ReportService } = require("../../application/use-cases/ReportService");
+const { DashboardService } = require("../../application/use-cases/DashboardService");
 const { seedData } = require("./seedData");
 
 function createContainer({ seed = true } = {}) {
@@ -22,15 +23,19 @@ function createContainer({ seed = true } = {}) {
     payments: new InMemoryRepository()
   };
 
+  const orderService = new OrderService(repositories.orders, repositories.products, repositories.users);
+  const reportService = new ReportService(repositories.orders, repositories.payments, repositories.products);
+
   const services = {
     auth: new AuthService(repositories.users),
     users: new CrudService(repositories.users, createUser, "Usuario"),
     categories: new CrudService(repositories.categories, createCategory, "Categoria"),
     products: new CrudService(repositories.products, createProduct, "Producto"),
     reservations: new CrudService(repositories.reservations, createReservation, "Reserva"),
-    orders: new OrderService(repositories.orders, repositories.products, repositories.users),
+    orders: orderService,
     payments: new PaymentService(repositories.payments, repositories.orders),
-    reports: new ReportService(repositories.orders, repositories.payments, repositories.products)
+    reports: reportService,
+    dashboard: new DashboardService(repositories, reportService, orderService)
   };
 
   if (seed) {
