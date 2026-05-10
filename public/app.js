@@ -41,6 +41,10 @@ function setStatus(ok) {
   statusEl.className = ok ? "status ok" : "status error";
 }
 
+function statusClass(status) {
+  return `badge status-${String(status).replace("_", "-")}`;
+}
+
 function setView(view) {
   state.view = view;
   viewTitle.textContent = titles[view];
@@ -115,7 +119,7 @@ async function renderDashboard() {
                 <span>Mesa ${order.tableNumber || "N/A"} · ${order.items.length} items</span>
               </div>
               <div>
-                <span class="badge">${order.status}</span>
+                <span class="${statusClass(order.status)}">${order.status}</span>
                 <strong>${formatCurrency(order.total)}</strong>
               </div>
             </div>
@@ -166,7 +170,7 @@ async function renderProducts() {
         <article class="product-card">
           <img src="${product.imageUrl}" alt="${product.name}">
           <div>
-            <span class="badge">${product.available ? "Disponible" : "Agotado"}</span>
+            <span class="${product.available ? "badge status-disponible" : "badge status-cancelado"}">${product.available ? "Disponible" : "Agotado"}</span>
             <h2>${product.name}</h2>
             <p>${product.description}</p>
             <strong>${formatCurrency(product.price)}</strong>
@@ -209,7 +213,7 @@ async function renderCustomers() {
                 <td>${customer.name}</td>
                 <td>${customer.email}</td>
                 <td>${customer.phone}</td>
-                <td><span class="badge">${customer.active ? "Activo" : "Inactivo"}</span></td>
+                <td><span class="${customer.active ? "badge status-disponible" : "badge status-cancelado"}">${customer.active ? "Activo" : "Inactivo"}</span></td>
               </tr>
             `).join("")}
           </tbody>
@@ -242,7 +246,7 @@ async function renderOrders() {
               <strong>#${order.id} - ${order.customer ? order.customer.name : "Cliente"}</strong>
               <span>Mesa ${order.tableNumber || "N/A"} · ${order.items.length} items · ${formatCurrency(order.total)}</span>
             </div>
-            <span class="badge">${order.status}</span>
+            <span class="${statusClass(order.status)}">${order.status}</span>
           </button>
         `).join("")}
       </div>
@@ -322,7 +326,7 @@ async function openOrderDrawer(orderId) {
 
     <section class="drawer-section">
       <p>Estado</p>
-      <span class="badge">${order.status}</span>
+      <span class="${statusClass(order.status)}">${order.status}</span>
       <span>Mesa ${order.tableNumber || "N/A"}</span>
     </section>
 

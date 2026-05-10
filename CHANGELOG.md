@@ -16,3 +16,4 @@
 - Implementacion de dashboard Bento Grid con metricas, ultimos pedidos y productos mas vendidos.
 - Implementacion de vistas paginadas para productos y clientes con controles visuales.
 - Implementacion de pedidos maestro-detalle con panel lateral de desglose.
+- Pulido visual de estados, badges y lectura general de la demo.
