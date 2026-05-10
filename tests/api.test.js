@@ -74,6 +74,29 @@ describe("SIGR Linea Base API", () => {
     expect(response.body.data.every((user) => user.role === "cliente")).toBe(true);
   });
 
+  test("crea y modifica clientes desde el CRUD", async () => {
+    const created = await request(app)
+      .post("/api/users")
+      .send({
+        name: "Cliente Demo",
+        email: "demo@example.com",
+        password: "cliente123",
+        phone: "3007778899",
+        role: "cliente"
+      });
+
+    expect(created.status).toBe(201);
+    expect(created.body.name).toBe("Cliente Demo");
+
+    const updated = await request(app)
+      .put(`/api/users/${created.body.id}`)
+      .send({ name: "Cliente Demo Editado", phone: "3000009999" });
+
+    expect(updated.status).toBe(200);
+    expect(updated.body.name).toBe("Cliente Demo Editado");
+    expect(updated.body.phone).toBe("3000009999");
+  });
+
   test("registra pago y genera reporte diario de ventas", async () => {
     const order = await request(app)
       .post("/api/orders")

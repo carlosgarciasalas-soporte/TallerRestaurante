@@ -43,6 +43,12 @@ button:hover {
   border-color: var(--brand);
 }
 
+.small-button {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr);
@@ -548,6 +554,99 @@ th {
   justify-content: space-between;
   padding: 16px 4px 6px;
   font-size: 20px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(15, 23, 42, 0.36);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  width: min(520px, calc(100% - 28px));
+  transform: translate(-50%, -46%) scale(0.98);
+  opacity: 0;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.modal.open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.form-card {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.modal-header,
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  color: var(--text);
+  font: inherit;
+}
+
+textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-row input {
+  width: 18px;
+  min-height: 18px;
+}
+
+.form-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
 }
 
 @keyframes shimmer {

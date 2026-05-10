@@ -19,6 +19,8 @@ const refreshButton = document.querySelector("#refreshButton");
 const menuButtons = document.querySelectorAll("[data-view]");
 const drawer = document.querySelector("#orderDrawer");
 const drawerBackdrop = document.querySelector("#drawerBackdrop");
+const modal = document.querySelector("#entityModal");
+const modalBackdrop = document.querySelector("#modalBackdrop");
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("es-CO", {
@@ -34,6 +36,18 @@ async function fetchJson(endpoint) {
     throw new Error(`HTTP ${response.status}`);
   }
   return response.json();
+}
+
+async function apiRequest(endpoint, options = {}) {
+  const response = await fetch(endpoint, {
+    headers: { "Content-Type": "application/json" },
+    ...options
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || `HTTP ${response.status}`);
+  }
+  return data;
 }
 
 function setStatus(ok) {
@@ -195,7 +209,7 @@ async function renderCustomers() {
           <p class="eyebrow">Clientes</p>
           <h2>Base de clientes demo</h2>
         </div>
-        <span>${result.meta.total} registros</span>
+        <button type="button" id="createCustomerButton">Agregar cliente</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -205,6 +219,7 @@ async function renderCustomers() {
               <th>Correo</th>
               <th>Telefono</th>
               <th>Estado</th>
+              <th>Accion</th>
             </tr>
           </thead>
           <tbody>
@@ -214,6 +229,7 @@ async function renderCustomers() {
                 <td>${customer.email}</td>
                 <td>${customer.phone}</td>
                 <td><span class="${customer.active ? "badge status-disponible" : "badge status-cancelado"}">${customer.active ? "Activo" : "Inactivo"}</span></td>
+                <td><button type="button" class="small-button" data-edit-customer="${customer.id}">Editar</button></td>
               </tr>
             `).join("")}
           </tbody>
@@ -223,6 +239,13 @@ async function renderCustomers() {
     ${renderPagination("customers", result.meta)}
   `;
   bindPagination();
+  document.querySelector("#createCustomerButton").addEventListener("click", () => openCustomerModal());
+  document.querySelectorAll("[data-edit-customer]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const customer = await fetchJson(`/api/users/${button.dataset.editCustomer}`);
+      openCustomerModal(customer);
+    });
+  });
 }
 
 async function renderOrders() {
@@ -372,3 +395,101 @@ function closeOrderDrawer() {
 }
 
 drawerBackdrop.addEventListener("click", closeOrderDrawer);
+
+function openCustomerModal(customer = null) {
+  const isEdit = Boolean(customer);
+  modal.innerHTML = `
+    <form id="customerForm" class="form-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Clientes</p>
+          <h2>${isEdit ? "Modificar cliente" : "Agregar cliente"}</h2>
+        </div>
+        <button type="button" id="closeModal">Cerrar</button>
+      </div>
+      <label>
+        Nombre
+        <input name="name" required value="${customer ? customer.name : ""}">
+      </label>
+      <label>
+        Correo
+        <input name="email" type="email" required value="${customer ? customer.email : ""}">
+      </label>
+      <label>
+        Telefono
+        <input name="phone" required value="${customer ? customer.phone : ""}">
+      </label>
+      ${isEdit ? "" : `
+        <label>
+          Contrasena inicial
+          <input name="password" type="password" required value="cliente123">
+        </label>
+      `}
+      <label class="checkbox-row">
+        <input name="active" type="checkbox" ${!customer || customer.active ? "checked" : ""}>
+        Cliente activo
+      </label>
+      <p id="modalError" class="form-error" hidden></p>
+      <div class="form-actions">
+        <button type="button" id="cancelModal">Cancelar</button>
+        <button type="submit">${isEdit ? "Guardar cambios" : "Crear cliente"}</button>
+      </div>
+    </form>
+  `;
+
+  showModal();
+  document.querySelector("#closeModal").addEventListener("click", closeModal);
+  document.querySelector("#cancelModal").addEventListener("click", closeModal);
+  document.querySelector("#customerForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      name: form.get("name").trim(),
+      email: form.get("email").trim(),
+      phone: form.get("phone").trim(),
+      role: "cliente",
+      active: form.get("active") === "on"
+    };
+    if (!isEdit) {
+      payload.password = form.get("password") || "cliente123";
+    }
+
+    try {
+      await apiRequest(isEdit ? `/api/users/${customer.id}` : "/api/users", {
+        method: isEdit ? "PUT" : "POST",
+        body: JSON.stringify(payload)
+      });
+      closeModal();
+      await renderCustomers();
+    } catch (error) {
+      showModalError(error.message);
+    }
+  });
+}
+
+function showModal() {
+  modal.hidden = false;
+  modalBackdrop.hidden = false;
+  requestAnimationFrame(() => {
+    modal.classList.add("open");
+    modalBackdrop.classList.add("open");
+  });
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+  modalBackdrop.classList.remove("open");
+  setTimeout(() => {
+    modal.hidden = true;
+    modalBackdrop.hidden = true;
+    modal.innerHTML = "";
+  }, 180);
+}
+
+function showModalError(message) {
+  const errorBox = document.querySelector("#modalError");
+  errorBox.textContent = message;
+  errorBox.hidden = false;
+}
+
+modalBackdrop.addEventListener("click", closeModal);
