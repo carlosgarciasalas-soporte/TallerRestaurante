@@ -2,7 +2,7 @@
 
 Linea base inicial del sistema SIGR para la actividad **AA2: Taller Grupal - Linea Base Software de Restaurante**.
 
-![Vista inicial del dashboard del restaurante](docs/assets/dashboard-preview.png)
+![Vista inicial del dashboard del restaurante](docs/assets/dashboard-preview-v2.png)
 
 ## Descripcion
 
