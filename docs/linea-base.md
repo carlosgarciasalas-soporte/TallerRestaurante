@@ -116,6 +116,11 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 | 1f4cae8 | style | 2026-05-10 03:14 | Logo local del dashboard. | Asset local usado en el dashboard desde public/assets. |
 | b0762be | docs | 2026-05-10 03:16 | Imagen inicial del dashboard. | Preview del README reemplazado en docs/assets. |
 | 790559d | docs | 2026-05-10 03:18 | Preview actualizado del dashboard. | README apunta a dashboard-preview-v2.png para evitar cache. |
+| 8dad627 | docs | 2026-05-10 03:27 | Entregable PDF actualizado. | PDF de linea base regenerado para la entrega. |
+| d921475 | docs | 2026-05-10 20:08 | Documentacion tecnica SIGR. | Documento tecnico ampliado y PDF asociado agregados al repositorio. |
+| 824f55d | feat | 2026-05-10 20:23 | Modulos de linea base completados. | CRUD visual de categorias, reservas por fecha/hora, caja con cierres e historial, pruebas ampliadas. |
+| ae0d95c | fix | 2026-05-10 20:28 | Correccion visual de actividad reciente. | Textos del panel de actividad ajustados para evitar solapamientos. |
+| 481e457 | fix | 2026-05-10 20:34 | Avatar local de Carlos. | Imagen local user_carlos.png usada en el perfil superior derecho. |
 
 ## Estructura de Datos
 
