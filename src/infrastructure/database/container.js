@@ -4,6 +4,7 @@ const { createProduct } = require("../../domain/entities/Product");
 const { createOrder } = require("../../domain/entities/Order");
 const { createPayment } = require("../../domain/entities/Payment");
 const { createReservation } = require("../../domain/entities/Reservation");
+const { createCashRegisterClose } = require("../../domain/entities/CashRegisterClose");
 const { InMemoryRepository } = require("../repositories/InMemoryRepository");
 const { CrudService } = require("../../application/use-cases/CrudService");
 const { AuthService } = require("../../application/use-cases/AuthService");
@@ -11,6 +12,9 @@ const { OrderService } = require("../../application/use-cases/OrderService");
 const { PaymentService } = require("../../application/use-cases/PaymentService");
 const { ReportService } = require("../../application/use-cases/ReportService");
 const { DashboardService } = require("../../application/use-cases/DashboardService");
+const { ProductService } = require("../../application/use-cases/ProductService");
+const { ReservationService } = require("../../application/use-cases/ReservationService");
+const { CashRegisterService } = require("../../application/use-cases/CashRegisterService");
 const { seedData } = require("./seedData");
 
 function createContainer({ seed = true } = {}) {
@@ -20,21 +24,24 @@ function createContainer({ seed = true } = {}) {
     products: new InMemoryRepository(),
     orders: new InMemoryRepository(),
     reservations: new InMemoryRepository(),
-    payments: new InMemoryRepository()
+    payments: new InMemoryRepository(),
+    cashClosures: new InMemoryRepository()
   };
 
   const orderService = new OrderService(repositories.orders, repositories.products, repositories.users);
   const reportService = new ReportService(repositories.orders, repositories.payments, repositories.products);
+  const cashRegisterService = new CashRegisterService(repositories.cashClosures, reportService);
 
   const services = {
     auth: new AuthService(repositories.users),
     users: new CrudService(repositories.users, createUser, "Usuario"),
     categories: new CrudService(repositories.categories, createCategory, "Categoria"),
-    products: new CrudService(repositories.products, createProduct, "Producto"),
-    reservations: new CrudService(repositories.reservations, createReservation, "Reserva"),
+    products: new ProductService(repositories.products, repositories.categories, createProduct),
+    reservations: new ReservationService(repositories.reservations, createReservation),
     orders: orderService,
     payments: new PaymentService(repositories.payments, repositories.orders),
     reports: reportService,
+    cashRegister: cashRegisterService,
     dashboard: new DashboardService(repositories, reportService, orderService)
   };
 
@@ -52,6 +59,7 @@ function seedContainer(repositories) {
   repositories.orders.clear();
   repositories.reservations.clear();
   repositories.payments.clear();
+  repositories.cashClosures.clear();
 
   seedData.users.forEach((item) => repositories.users.create(createUser(item)));
   seedData.categories.forEach((item) => repositories.categories.create(createCategory(item)));
@@ -59,6 +67,7 @@ function seedContainer(repositories) {
   seedData.orders.forEach((item) => repositories.orders.create(createOrder(item)));
   seedData.payments.forEach((item) => repositories.payments.create(createPayment(item)));
   seedData.reservations.forEach((item) => repositories.reservations.create(createReservation(item)));
+  (seedData.cashClosures || []).forEach((item) => repositories.cashClosures.create(createCashRegisterClose(item)));
 }
 
 module.exports = { createContainer, seedContainer };

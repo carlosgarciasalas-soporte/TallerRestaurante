@@ -51,7 +51,8 @@ const seedData = {
     { id: "1", customerName: "Laura Perez", phone: "3001112233", date: "2026-05-12", time: "19:00", people: 4, status: "confirmada" },
     { id: "2", customerName: "Andres Rojas", phone: "3002223344", date: "2026-05-12", time: "20:30", people: 2, status: "pendiente" },
     { id: "3", customerName: "Sofia Martinez", phone: "3003334455", date: "2026-05-13", time: "18:45", people: 6, status: "confirmada" }
-  ]
+  ],
+  cashClosures: []
 };
 
 module.exports = { seedData };

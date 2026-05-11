@@ -8,7 +8,7 @@ Linea base inicial del sistema SIGR para la actividad **AA2: Taller Grupal - Lin
 
 SIGR es una API web para gestionar operaciones basicas de un restaurante: usuarios, menu digital, pedidos, reservas, pagos, caja y reportes. Esta version funciona como linea base estable para control de cambios y trazabilidad.
 
-La demo web incluye dashboard administrativo estilo restaurante con marca visual propia, metricas, graficas, menus tendencia, actividad reciente, resenas, productos con imagenes, clientes paginados, formularios para agregar/modificar clientes y productos, y pedidos maestro-detalle con panel lateral.
+La demo web incluye dashboard administrativo estilo restaurante con marca visual propia, metricas, graficas, menus tendencia, actividad reciente, resenas, productos con imagenes, categorias, reservas por fecha y hora, cierre de caja, clientes paginados, formularios para agregar/modificar clientes, productos, categorias y reservas, y pedidos maestro-detalle con panel lateral.
 
 ## Stack
 
@@ -98,12 +98,18 @@ La version de linea base usa repositorios en memoria para facilitar la demostrac
 - `POST /api/auth/login`
 - `GET /api/users`
 - `GET /api/categories`
+- `POST /api/categories`
 - `GET /api/products`
+- `POST /api/products`
 - `GET /api/orders`
 - `POST /api/orders`
 - `GET /api/orders/:id`
 - `GET /api/reservations`
+- `POST /api/reservations`
 - `POST /api/payments`
+- `GET /api/cash-register/daily-summary`
+- `POST /api/cash-register/close`
+- `GET /api/cash-register/closures`
 - `GET /api/reports/daily-sales`
 - `GET /api/reports/orders-by-status`
 - `GET /api/reports/top-products`

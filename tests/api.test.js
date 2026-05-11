@@ -131,6 +131,77 @@ describe("SIGR Linea Base API", () => {
     expect(updated.body.price).toBe(15000);
   });
 
+  test("crea y modifica categorias del menu digital", async () => {
+    const created = await request(app)
+      .post("/api/categories")
+      .send({
+        name: "Especiales",
+        description: "Platos especiales de temporada."
+      });
+
+    expect(created.status).toBe(201);
+    expect(created.body.name).toBe("Especiales");
+
+    const updated = await request(app)
+      .put(`/api/categories/${created.body.id}`)
+      .send({ name: "Especiales de la casa", active: false });
+
+    expect(updated.status).toBe(200);
+    expect(updated.body.name).toBe("Especiales de la casa");
+    expect(updated.body.active).toBe(false);
+  });
+
+  test("rechaza productos asociados a categorias inexistentes", async () => {
+    const response = await request(app)
+      .post("/api/products")
+      .send({
+        name: "Producto sin categoria",
+        categoryId: "999",
+        description: "No debe ser creado.",
+        price: 10000,
+        imageUrl: "https://example.com/producto.jpg",
+        available: true
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("La categoria del producto no existe.");
+  });
+
+  test("gestiona reservas por fecha y hora", async () => {
+    const created = await request(app)
+      .post("/api/reservations")
+      .send({
+        customerName: "Reserva Demo",
+        phone: "3004445566",
+        date: "2026-05-20",
+        time: "19:30",
+        people: 4
+      });
+
+    expect(created.status).toBe(201);
+    expect(created.body.status).toBe("pendiente");
+
+    const duplicated = await request(app)
+      .post("/api/reservations")
+      .send({
+        customerName: "Reserva Duplicada",
+        phone: "3004445577",
+        date: "2026-05-20",
+        time: "19:30",
+        people: 2
+      });
+
+    expect(duplicated.status).toBe(400);
+
+    const updated = await request(app)
+      .put(`/api/reservations/${created.body.id}`)
+      .send({ status: "confirmada", time: "20:00" });
+
+    expect(updated.status).toBe(200);
+    expect(updated.body.status).toBe("confirmada");
+    expect(updated.body.time).toBe("20:00");
+  });
+
   test("registra pago y genera reporte diario de ventas", async () => {
     const order = await request(app)
       .post("/api/orders")
@@ -149,5 +220,33 @@ describe("SIGR Linea Base API", () => {
 
     expect(report.status).toBe(200);
     expect(report.body.totalSales).toBeGreaterThanOrEqual(22000);
+  });
+
+  test("cierra caja y conserva historial de cierres diarios", async () => {
+    const summary = await request(app).get("/api/cash-register/daily-summary?date=2026-05-10");
+
+    expect(summary.status).toBe(200);
+    expect(summary.body.totalSales).toBe(104000);
+    expect(summary.body.paymentsCount).toBe(2);
+
+    const close = await request(app)
+      .post("/api/cash-register/close")
+      .send({ date: "2026-05-10" });
+
+    expect(close.status).toBe(201);
+    expect(close.body.date).toBe("2026-05-10");
+    expect(close.body.totalSales).toBe(104000);
+
+    const duplicated = await request(app)
+      .post("/api/cash-register/close")
+      .send({ date: "2026-05-10" });
+
+    expect(duplicated.status).toBe(400);
+    expect(duplicated.body.error).toBe("La caja ya fue cerrada para esta fecha.");
+
+    const closures = await request(app).get("/api/cash-register/closures");
+
+    expect(closures.status).toBe(200);
+    expect(closures.body.data).toHaveLength(1);
   });
 });

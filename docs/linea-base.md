@@ -35,6 +35,9 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - Vistas paginadas para productos y clientes.
 - Formularios modales para agregar y modificar clientes.
 - Formularios modales para agregar y modificar productos.
+- Formularios modales para agregar y modificar categorias.
+- Vista de reservas con filtro por fecha, creacion, modificacion y cancelacion.
+- Vista de caja con resumen diario, cierre de caja e historial de cierres.
 - Dashboard administrativo con metricas, graficas de ingresos, ordenes, categorias, actividad, resenas y menus tendencia.
 - Panel lateral de detalle para pedidos.
 - Pruebas basicas de integracion.
@@ -72,6 +75,7 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 - `CHANGELOG.md`: historial de cambios de la linea base.
 - `LICENSE.txt`: licencia MIT.
 - `docs/linea-base.md`: fuente del documento tecnico para exportar a PDF.
+- `docs/documentacion-tecnica.md`: documentacion tecnica ampliada de arquitectura, modulos y evidencias.
 - `docs/assets/dashboard-preview-v2.png`: imagen generada automaticamente para evidenciar la vista inicial del dashboard.
 
 ## Validacion y Aprobacion
@@ -115,7 +119,7 @@ Definir y documentar una linea base inicial del sistema SIGR, reforzando compete
 
 ## Estructura de Datos
 
-La linea base usa repositorios en memoria ubicados en `src/infrastructure/repositories`. Los datos iniciales se cargan desde `src/infrastructure/database/seedData.js` e incluyen usuarios, categorias, productos, pedidos, pagos y reservas.
+La linea base usa repositorios en memoria ubicados en `src/infrastructure/repositories`. Los datos iniciales se cargan desde `src/infrastructure/database/seedData.js` e incluyen usuarios, categorias, productos, pedidos, pagos, reservas y cierres de caja.
 
 Esta decision permite ejecutar la demo sin instalar un motor de base de datos. Como limitacion, los datos creados desde la interfaz se reinician al reiniciar el servidor.
 

@@ -64,14 +64,15 @@ function createApiRouter(services) {
   }));
 
   router.get("/cash-register/daily-summary", asyncHandler(async (req, res) => {
-    res.json(services.reports.dailySales(req.query.date));
+    res.json(services.cashRegister.dailySummary(req.query.date));
+  }));
+
+  router.get("/cash-register/closures", asyncHandler(async (req, res) => {
+    res.json(services.cashRegister.listClosures(req.query));
   }));
 
   router.post("/cash-register/close", asyncHandler(async (req, res) => {
-    res.json({
-      closed: true,
-      summary: services.reports.dailySales(req.body.date)
-    });
+    res.status(201).json(services.cashRegister.close(req.body.date));
   }));
 
   router.get("/reports/daily-sales", asyncHandler(async (req, res) => {

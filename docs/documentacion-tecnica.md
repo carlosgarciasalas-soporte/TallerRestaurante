@@ -67,7 +67,7 @@ TallerRestaurante/
 - `src/application/use-cases/`: contiene los servicios de aplicacion que implementan los casos de uso.
 - `src/infrastructure/http/`: contiene la app Express, rutas, middlewares y manejo de errores HTTP.
 - `src/infrastructure/database/`: contiene el contenedor de dependencias y los datos iniciales.
-- `src/infrastructure/repositories/`: contiene el repositorio en memoria.
+- `src/infrastructure/repositories/`: contiene el repositorio en memoria para datos operativos y cierres de caja.
 - `src/shared/`: utilidades reutilizables, como paginacion y errores de aplicacion.
 - `public/`: interfaz web estatica que consume la API REST.
 - `tests/`: pruebas de integracion de la API.
@@ -99,6 +99,7 @@ La capa de dominio esta ubicada en `src/domain/entities/`. Define las reglas bas
 - `Order.js`: valida cliente, items, estados permitidos y calcula subtotales y total.
 - `Payment.js`: valida pedido, monto y metodo de pago.
 - `Reservation.js`: valida cliente, telefono, fecha, hora, numero de personas y estado.
+- `CashRegisterClose.js`: registra el cierre diario de caja con fecha, total vendido, pagos y fecha de cierre.
 
 Esta capa no depende de Express ni de detalles de infraestructura.
 
@@ -108,9 +109,12 @@ La capa de aplicacion esta en `src/application/use-cases/`. Aqui se coordinan lo
 
 - `AuthService.js`: autentica usuarios de prueba y devuelve un token demo.
 - `CrudService.js`: implementa operaciones genericas de listar, consultar, crear, modificar y eliminar.
+- `ProductService.js`: extiende el CRUD de productos y valida que la categoria exista.
+- `ReservationService.js`: extiende el CRUD de reservas y evita duplicados activos en la misma fecha y hora.
 - `OrderService.js`: gestiona pedidos maestro-detalle, valida cliente y productos, enriquece pedidos con datos de cliente y producto.
 - `PaymentService.js`: registra pagos y cambia el estado del pedido a `pagado`.
 - `ReportService.js`: genera reportes de ventas diarias, pedidos por estado y productos mas vendidos.
+- `CashRegisterService.js`: genera resumen diario, registra cierres de caja y conserva historial de cierres.
 - `DashboardService.js`: calcula metricas y analitica para el dashboard administrativo.
 
 ### Capa de infraestructura
@@ -202,13 +206,16 @@ La interfaz esta compuesta por:
 
 - `public/index.html`: estructura base, sidebar, barra superior, contenedores de vista, drawer y modal.
 - `public/styles.css`: estilos visuales, layout responsive, cards, tablas, dashboard, modales y drawer.
-- `public/app.js`: logica del cliente, consumo de API, renderizado de dashboard, productos, clientes, ofertas y pedidos.
+- `public/app.js`: logica del cliente, consumo de API y renderizado de dashboard, ofertas, productos, categorias, reservas, caja/reportes, clientes y pedidos.
 
 El frontend usa JavaScript vanilla y renderiza vistas segun el estado local:
 
 - `dashboard`
 - `offers`
 - `products`
+- `categories`
+- `reservations`
+- `cash`
 - `customers`
 - `orders`
 
@@ -226,6 +233,8 @@ Permite listar usuarios, filtrar clientes por rol, crear clientes y modificarlos
 
 Permite gestionar categorias y productos. Los productos incluyen nombre, descripcion, precio, disponibilidad e imagen.
 
+La linea base incluye una vista administrativa para categorias y una validacion en backend para impedir productos asociados a categorias inexistentes.
+
 ### Pedidos maestro-detalle
 
 Cada pedido contiene un encabezado con cliente, mesa, estado, total y fecha. Tambien contiene un detalle con items, cantidades, precios unitarios y subtotales.
@@ -233,6 +242,8 @@ Cada pedido contiene un encabezado con cliente, mesa, estado, total y fecha. Tam
 ### Pagos y caja
 
 El sistema registra pagos asociados a pedidos. Al registrar un pago, el pedido cambia a estado `pagado`. Los reportes de caja permiten consultar ventas diarias.
+
+El cierre de caja queda persistido en memoria con fecha, total de ventas, cantidad de pagos, detalle de pagos y fecha de cierre. El sistema evita cerrar dos veces la caja para la misma fecha.
 
 ### Reportes
 
@@ -256,11 +267,16 @@ Muestra indicadores de ordenes, clientes, ingresos, ticket promedio, graficas, c
 | POST | `/api/products` | Crea producto |
 | PUT | `/api/products/:id` | Modifica producto |
 | GET | `/api/reservations` | Lista reservas |
+| POST | `/api/reservations` | Crea reserva por fecha y hora |
+| PUT | `/api/reservations/:id` | Modifica reserva |
 | GET | `/api/orders` | Lista pedidos |
 | POST | `/api/orders` | Crea pedido maestro-detalle |
 | GET | `/api/orders/:id` | Consulta detalle de pedido |
 | PUT | `/api/orders/:id/status` | Actualiza estado de pedido |
 | POST | `/api/payments` | Registra pago |
+| GET | `/api/cash-register/daily-summary` | Resumen diario de caja |
+| POST | `/api/cash-register/close` | Registra cierre de caja |
+| GET | `/api/cash-register/closures` | Lista cierres de caja |
 | GET | `/api/reports/daily-sales` | Reporte de ventas diarias |
 | GET | `/api/reports/orders-by-status` | Pedidos agrupados por estado |
 | GET | `/api/reports/top-products` | Productos mas vendidos |
@@ -369,13 +385,17 @@ Las pruebas se encuentran en `tests/api.test.js` y validan:
 - Filtro de clientes.
 - Creacion y modificacion de clientes.
 - Creacion y modificacion de productos.
+- Creacion y modificacion de categorias.
+- Validacion de productos con categoria inexistente.
+- Creacion, modificacion y validacion de duplicados en reservas.
 - Registro de pagos y reporte diario de ventas.
+- Registro de cierre de caja e historial de cierres diarios.
 
 Resultado de validacion local:
 
 ```text
 Test Suites: 1 passed, 1 total
-Tests: 10 passed, 10 total
+Tests: 14 passed, 14 total
 ```
 
 ## 13. Despliegue

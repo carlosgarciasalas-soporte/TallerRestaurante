@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 - Cumplimiento de modulos de linea base
+
+- Implementacion de CRUD visual de categorias del menu digital.
+- Validacion backend para impedir productos con categorias inexistentes.
+- Implementacion de vista de reservas con filtro por fecha, creacion, edicion y cancelacion.
+- Validacion de reservas duplicadas por fecha y hora.
+- Implementacion de cierre de caja persistido en memoria e historial de cierres.
+- Implementacion de vista de caja y reportes diarios.
+- Ampliacion de pruebas de integracion a categorias, reservas y cierre de caja.
+- Actualizacion de README y documentacion tecnica.
+
 ## 1.1.0 - Redisenho visual dashboard restaurante
 
 - Aplicacion de rebranding visual con logo de pancerotti y marca Restaurante.

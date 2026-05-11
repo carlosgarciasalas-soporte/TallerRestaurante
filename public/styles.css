@@ -451,6 +451,62 @@ h1 {
   color: var(--muted);
 }
 
+.compact-toolbar {
+  justify-content: flex-start;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.compact-toolbar label {
+  min-width: 220px;
+}
+
+.action-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.danger-button {
+  color: var(--danger);
+}
+
+.cash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 18px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-tile {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff7ed;
+}
+
+.summary-tile span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.summary-tile strong {
+  font-size: 24px;
+}
+
+.floating-error {
+  margin-bottom: 12px;
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1270,7 +1326,9 @@ textarea {
   .admin-dashboard,
   .dashboard-main,
   .kpi-row,
-  .split-card {
+  .split-card,
+  .cash-grid,
+  .summary-grid {
     grid-template-columns: 1fr;
   }
 

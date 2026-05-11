@@ -2,6 +2,11 @@ const state = {
   view: "dashboard",
   productsPage: 1,
   customersPage: 1,
+  categoriesPage: 1,
+  reservationsPage: 1,
+  cashClosuresPage: 1,
+  reservationsDate: "",
+  cashDate: new Date().toISOString().slice(0, 10),
   limit: 6
 };
 
@@ -9,6 +14,9 @@ const titles = {
   dashboard: "Dashboard",
   offers: "Ofertas del dia",
   products: "Productos",
+  categories: "Categorias",
+  reservations: "Reservas",
+  cash: "Caja y reportes",
   customers: "Clientes",
   orders: "Pedidos"
 };
@@ -304,6 +312,64 @@ async function renderProducts() {
   });
 }
 
+async function renderCategories() {
+  viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
+
+  const result = await fetchJson(`/api/categories?page=${state.categoriesPage}&limit=${state.limit}`);
+
+  viewRoot.innerHTML = `
+    <section class="data-panel">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Menu digital</p>
+          <h2>Categorias de platos</h2>
+        </div>
+        <button type="button" id="createCategoryButton">Agregar categoria</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Descripcion</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${result.data.map((category) => `
+              <tr>
+                <td>${category.name}</td>
+                <td>${category.description || "Sin descripcion"}</td>
+                <td><span class="${category.active ? "badge status-disponible" : "badge status-cancelado"}">${category.active ? "Activa" : "Inactiva"}</span></td>
+                <td class="action-cell">
+                  <button type="button" class="small-button" data-edit-category="${category.id}">Editar</button>
+                  <button type="button" class="small-button danger-button" data-delete-category="${category.id}">Eliminar</button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    ${renderPagination("categories", result.meta)}
+  `;
+  bindPagination();
+  document.querySelector("#createCategoryButton").addEventListener("click", () => openCategoryModal());
+  document.querySelectorAll("[data-edit-category]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const category = await fetchJson(`/api/categories/${button.dataset.editCategory}`);
+      openCategoryModal(category);
+    });
+  });
+  document.querySelectorAll("[data-delete-category]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      await apiRequest(`/api/categories/${button.dataset.deleteCategory}`, { method: "DELETE" });
+      await renderCategories();
+    });
+  });
+}
+
 async function renderOffers() {
   const offers = [
     {
@@ -403,6 +469,91 @@ async function renderCustomers() {
   });
 }
 
+async function renderReservations() {
+  viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
+
+  const result = await fetchJson(`/api/reservations?page=${state.reservationsPage}&limit=${state.limit}`);
+  const reservations = state.reservationsDate
+    ? result.data.filter((reservation) => reservation.date === state.reservationsDate)
+    : result.data;
+
+  viewRoot.innerHTML = `
+    <section class="data-panel">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Reservas</p>
+          <h2>Agenda por fecha y hora</h2>
+        </div>
+        <button type="button" id="createReservationButton">Agregar reserva</button>
+      </div>
+      <section class="toolbar compact-toolbar">
+        <label>
+          Filtrar por fecha
+          <input id="reservationDateFilter" type="date" value="${state.reservationsDate}">
+        </label>
+        <button type="button" class="small-button" id="clearReservationDate">Limpiar filtro</button>
+      </section>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Telefono</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Personas</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reservations.map((reservation) => `
+              <tr>
+                <td>${reservation.customerName}</td>
+                <td>${reservation.phone}</td>
+                <td>${reservation.date}</td>
+                <td>${reservation.time}</td>
+                <td>${reservation.people}</td>
+                <td><span class="${statusClass(reservation.status)}">${reservation.status}</span></td>
+                <td class="action-cell">
+                  <button type="button" class="small-button" data-edit-reservation="${reservation.id}">Editar</button>
+                  <button type="button" class="small-button danger-button" data-cancel-reservation="${reservation.id}">Cancelar</button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    ${renderPagination("reservations", result.meta)}
+  `;
+  bindPagination();
+  document.querySelector("#createReservationButton").addEventListener("click", () => openReservationModal());
+  document.querySelector("#reservationDateFilter").addEventListener("change", (event) => {
+    state.reservationsDate = event.target.value;
+    renderReservations();
+  });
+  document.querySelector("#clearReservationDate").addEventListener("click", () => {
+    state.reservationsDate = "";
+    renderReservations();
+  });
+  document.querySelectorAll("[data-edit-reservation]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const reservation = await fetchJson(`/api/reservations/${button.dataset.editReservation}`);
+      openReservationModal(reservation);
+    });
+  });
+  document.querySelectorAll("[data-cancel-reservation]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      await apiRequest(`/api/reservations/${button.dataset.cancelReservation}`, {
+        method: "PUT",
+        body: JSON.stringify({ status: "cancelada" })
+      });
+      await renderReservations();
+    });
+  });
+}
+
 async function renderOrders() {
   viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
 
@@ -436,6 +587,103 @@ async function renderOrders() {
   });
 }
 
+async function renderCashRegister() {
+  viewRoot.innerHTML = `<section class="data-panel skeleton"></section>`;
+
+  const [summary, closures] = await Promise.all([
+    fetchJson(`/api/cash-register/daily-summary?date=${state.cashDate}`),
+    fetchJson(`/api/cash-register/closures?page=${state.cashClosuresPage}&limit=${state.limit}`)
+  ]);
+
+  viewRoot.innerHTML = `
+    <section class="cash-grid">
+      <article class="data-panel">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Caja</p>
+            <h2>Resumen diario</h2>
+          </div>
+          <button type="button" id="closeCashButton">Cerrar caja</button>
+        </div>
+        <section class="toolbar compact-toolbar">
+          <label>
+            Fecha de corte
+            <input id="cashDateInput" type="date" value="${state.cashDate}">
+          </label>
+        </section>
+        <div class="summary-grid">
+          <article class="summary-tile">
+            <span>Ventas del dia</span>
+            <strong>${formatCurrency(summary.totalSales)}</strong>
+          </article>
+          <article class="summary-tile">
+            <span>Pagos registrados</span>
+            <strong>${summary.paymentsCount}</strong>
+          </article>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Pago</th><th>Pedido</th><th>Metodo</th><th>Monto</th><th>Fecha</th></tr></thead>
+            <tbody>
+              ${summary.payments.map((payment) => `
+                <tr>
+                  <td>#${payment.id}</td>
+                  <td>#${payment.orderId}</td>
+                  <td>${payment.method}</td>
+                  <td>${formatCurrency(payment.amount)}</td>
+                  <td>${payment.paidAt.slice(0, 10)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="data-panel">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Historial</p>
+            <h2>Cierres realizados</h2>
+          </div>
+          <span>${closures.meta.total} cierres</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fecha</th><th>Total</th><th>Pagos</th><th>Cerrado</th></tr></thead>
+            <tbody>
+              ${closures.data.map((close) => `
+                <tr>
+                  <td>${close.date}</td>
+                  <td>${formatCurrency(close.totalSales)}</td>
+                  <td>${close.paymentsCount}</td>
+                  <td>${new Date(close.closedAt).toLocaleString("es-CO")}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+        ${renderPagination("cashClosures", closures.meta)}
+      </article>
+    </section>
+  `;
+  bindPagination();
+  document.querySelector("#cashDateInput").addEventListener("change", (event) => {
+    state.cashDate = event.target.value;
+    renderCashRegister();
+  });
+  document.querySelector("#closeCashButton").addEventListener("click", async () => {
+    try {
+      await apiRequest("/api/cash-register/close", {
+        method: "POST",
+        body: JSON.stringify({ date: state.cashDate })
+      });
+      await renderCashRegister();
+    } catch (error) {
+      viewRoot.insertAdjacentHTML("afterbegin", `<p class="form-error floating-error">${error.message}</p>`);
+    }
+  });
+}
+
 async function render() {
   try {
     await fetchJson("/api/health");
@@ -444,6 +692,9 @@ async function render() {
     if (state.view === "dashboard") await renderDashboard();
     if (state.view === "offers") await renderOffers();
     if (state.view === "products") await renderProducts();
+    if (state.view === "categories") await renderCategories();
+    if (state.view === "reservations") await renderReservations();
+    if (state.view === "cash") await renderCashRegister();
     if (state.view === "customers") await renderCustomers();
     if (state.view === "orders") await renderOrders();
   } catch (error) {
@@ -481,6 +732,15 @@ function bindPagination() {
       }
       if (button.dataset.pageTarget === "customers") {
         state.customersPage = page;
+      }
+      if (button.dataset.pageTarget === "categories") {
+        state.categoriesPage = page;
+      }
+      if (button.dataset.pageTarget === "reservations") {
+        state.reservationsPage = page;
+      }
+      if (button.dataset.pageTarget === "cashClosures") {
+        state.cashClosuresPage = page;
       }
       render();
     });
@@ -619,6 +879,137 @@ function openCustomerModal(customer = null) {
       });
       closeModal();
       await renderCustomers();
+    } catch (error) {
+      showModalError(error.message);
+    }
+  });
+}
+
+function openCategoryModal(category = null) {
+  const isEdit = Boolean(category);
+  modal.innerHTML = `
+    <form id="categoryForm" class="form-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Categorias</p>
+          <h2>${isEdit ? "Modificar categoria" : "Agregar categoria"}</h2>
+        </div>
+        <button type="button" id="closeModal">Cerrar</button>
+      </div>
+      <label>
+        Nombre
+        <input name="name" required value="${category ? category.name : ""}">
+      </label>
+      <label>
+        Descripcion
+        <textarea name="description">${category ? category.description : ""}</textarea>
+      </label>
+      <label class="checkbox-row">
+        <input name="active" type="checkbox" ${!category || category.active ? "checked" : ""}>
+        Categoria activa
+      </label>
+      <p id="modalError" class="form-error" hidden></p>
+      <div class="form-actions">
+        <button type="button" id="cancelModal">Cancelar</button>
+        <button type="submit">${isEdit ? "Guardar cambios" : "Crear categoria"}</button>
+      </div>
+    </form>
+  `;
+
+  showModal();
+  document.querySelector("#closeModal").addEventListener("click", closeModal);
+  document.querySelector("#cancelModal").addEventListener("click", closeModal);
+  document.querySelector("#categoryForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      name: form.get("name").trim(),
+      description: form.get("description").trim(),
+      active: form.get("active") === "on"
+    };
+
+    try {
+      await apiRequest(isEdit ? `/api/categories/${category.id}` : "/api/categories", {
+        method: isEdit ? "PUT" : "POST",
+        body: JSON.stringify(payload)
+      });
+      closeModal();
+      await renderCategories();
+    } catch (error) {
+      showModalError(error.message);
+    }
+  });
+}
+
+function openReservationModal(reservation = null) {
+  const isEdit = Boolean(reservation);
+  modal.innerHTML = `
+    <form id="reservationForm" class="form-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Reservas</p>
+          <h2>${isEdit ? "Modificar reserva" : "Agregar reserva"}</h2>
+        </div>
+        <button type="button" id="closeModal">Cerrar</button>
+      </div>
+      <label>
+        Cliente
+        <input name="customerName" required value="${reservation ? reservation.customerName : ""}">
+      </label>
+      <label>
+        Telefono
+        <input name="phone" required value="${reservation ? reservation.phone : ""}">
+      </label>
+      <label>
+        Fecha
+        <input name="date" type="date" required value="${reservation ? reservation.date : state.cashDate}">
+      </label>
+      <label>
+        Hora
+        <input name="time" type="time" required value="${reservation ? reservation.time : "19:00"}">
+      </label>
+      <label>
+        Personas
+        <input name="people" type="number" min="1" required value="${reservation ? reservation.people : 2}">
+      </label>
+      <label>
+        Estado
+        <select name="status">
+          ${["pendiente", "confirmada", "cancelada"].map((status) => `
+            <option value="${status}" ${reservation && reservation.status === status ? "selected" : ""}>${status}</option>
+          `).join("")}
+        </select>
+      </label>
+      <p id="modalError" class="form-error" hidden></p>
+      <div class="form-actions">
+        <button type="button" id="cancelModal">Cancelar</button>
+        <button type="submit">${isEdit ? "Guardar cambios" : "Crear reserva"}</button>
+      </div>
+    </form>
+  `;
+
+  showModal();
+  document.querySelector("#closeModal").addEventListener("click", closeModal);
+  document.querySelector("#cancelModal").addEventListener("click", closeModal);
+  document.querySelector("#reservationForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      customerName: form.get("customerName").trim(),
+      phone: form.get("phone").trim(),
+      date: form.get("date"),
+      time: form.get("time"),
+      people: Number(form.get("people")),
+      status: form.get("status")
+    };
+
+    try {
+      await apiRequest(isEdit ? `/api/reservations/${reservation.id}` : "/api/reservations", {
+        method: isEdit ? "PUT" : "POST",
+        body: JSON.stringify(payload)
+      });
+      closeModal();
+      await renderReservations();
     } catch (error) {
       showModalError(error.message);
     }
